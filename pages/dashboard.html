@@ -95,8 +95,11 @@
     <div class="panel" id="panel-s-chat" style="height:calc(100vh - 120px);display:none;flex-direction:column">
       <div class="card" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
         <div class="channel-header">
-          <div class="channel-avatar">LV</div>
-          <div><div class="channel-name">Luka Vardosanidze</div><div class="channel-status">● Online · Teacher</div></div>
+          <div class="channel-av teacher" id="s-peer-avatar">T</div>
+          <div style="flex:1">
+            <div class="channel-name" id="channel-name">Your Teacher</div>
+            <div class="channel-status" id="s-channel-status">Loading...</div>
+          </div>
         </div>
         <div class="channel-body" id="channel-body">
           <div class="channel-sys">Conversation · 2026</div>
@@ -108,7 +111,7 @@
             <button class="channel-quick-btn" onclick="quickMsg('s','Thank you! 🙏')">🙏 Thank you</button>
           </div>
           <div class="channel-input-row" style="margin-top:0.6rem">
-            <textarea class="channel-input" id="s-channel-input" placeholder="Message..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg('s')}"></textarea>
+            <textarea class="channel-input" id="s-channel-input" placeholder="Message..." rows="1" oninput="handleTyping('s')" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg('s')}"></textarea>
             <button class="btn-channel-send" onclick="sendChatMsg('s')">➤</button>
           </div>
         </div>
@@ -226,11 +229,13 @@
     <div class="panel" id="panel-t-chat" style="height:calc(100vh - 120px);display:none;flex-direction:column">
       <div class="card" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
         <div class="channel-header">
-          <div style="display:flex;gap:0.5rem;margin-right:auto">
-            <div class="channel-avatar" style="cursor:pointer;font-size:0.7rem" onclick="setActivePeer(null,'Ana Beridze');switchPanel('t-chat')">AB</div>
-            <div class="channel-avatar" style="cursor:pointer;font-size:0.7rem;background:linear-gradient(135deg,#eaf0f6,#c0d8b0)" onclick="setActivePeer(null,'Giorgi Mchedlishvili');switchPanel('t-chat')">GM</div>
+          <div id="t-student-chips" style="display:flex;gap:0.4rem;flex-wrap:wrap;flex:1">
+            <span style="color:var(--text3);font-size:0.78rem;align-self:center">Loading students...</span>
           </div>
-          <div style="text-align:right"><div class="channel-name" id="t-channel-name">Ana Beridze</div><div class="channel-status">● Online · Student</div></div>
+          <div style="text-align:right">
+            <div class="channel-name" id="t-channel-name">Select a student</div>
+            <div class="channel-status" id="t-channel-status">Choose from list above</div>
+          </div>
         </div>
         <div class="channel-body" id="channel-body-t">
           <div class="channel-sys">Conversation · 2026</div>
@@ -241,7 +246,7 @@
             <button class="channel-quick-btn" onclick="quickMsg('t','Please complete your homework.')">📝 Homework reminder</button>
           </div>
           <div class="channel-input-row" style="margin-top:0.6rem">
-            <textarea class="channel-input" id="t-channel-input" placeholder="Message..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg('t')}"></textarea>
+            <textarea class="channel-input" id="t-channel-input" placeholder="Message..." rows="1" oninput="handleTyping('t')" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg('t')}"></textarea>
             <button class="btn-channel-send" onclick="sendChatMsg('t')">➤</button>
           </div>
         </div>

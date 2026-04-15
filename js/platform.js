@@ -25,6 +25,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   } else {
     switchPanel('s-home'); loadStudentData(); checkPendingTeacher();
   }
+
+  // Update last_seen every 2 minutes
+  updateOnlineStatus();
+  setInterval(updateOnlineStatus, 120000);
 });
 
 function checkPendingTeacher() {
@@ -101,22 +105,52 @@ async function openChatPanel(panelId) {
     teacherId = sel?.teacher_profile_id;
   }
   if (teacherId) {
-    const { data:teacher } = await supabase.from('profiles').select('id,full_name').eq('id',teacherId).single();
+    const { data:teacher } = await supabase.from('profiles').select('id,full_name,last_seen').eq('id',teacherId).single();
     if (teacher) {
       APP.peerUserId = teacher.id;
-      const nameEl = document.getElementById('channel-name');
-      if (nameEl) nameEl.textContent = teacher.full_name;
+      const nameEl   = document.getElementById('channel-name');
+      const statusEl = document.getElementById('s-channel-status');
+      const avatarEl = document.getElementById('s-peer-avatar');
+      if (nameEl)   nameEl.textContent   = teacher.full_name;
+      if (avatarEl) avatarEl.textContent = initials(teacher.full_name);
+      if (statusEl) {
+        const lastSeen = teacher.last_seen;
+        const diff = lastSeen ? Math.floor((Date.now() - new Date(lastSeen))/1000) : 9999;
+        statusEl.textContent = diff < 120 ? '● Online · Teacher' : 'Last seen ' + timeAgo(lastSeen);
+        statusEl.style.color = diff < 120 ? 'var(--green)' : 'var(--text3)';
+      }
     }
     await initChat(teacherId, 'channel-body');
   } else {
-    const body = document.getElementById('channel-body');
-    if (body) body.innerHTML = '<div class="channel-sys">No teacher assigned yet</div>';
+    // Check student_teachers table as fallback
+    const { data: stLinks } = await supabase.from('student_teachers')
+      .select('teacher:profiles!teacher_id(id,full_name,last_seen)')
+      .eq('student_id', APP.profile.id).limit(1).single();
+    if (stLinks?.teacher) {
+      APP.peerUserId = stLinks.teacher.id;
+      const nameEl = document.getElementById('channel-name');
+      if (nameEl) nameEl.textContent = stLinks.teacher.full_name;
+      await initChat(stLinks.teacher.id, 'channel-body');
+    } else {
+      const body = document.getElementById('channel-body');
+      if (body) body.innerHTML = '<div class="channel-sys">No teacher assigned yet — contact admin</div>';
+    }
   }
 }
 window.setActivePeer = async function(peerId, peerName) {
   cleanup(); APP.peerUserId = peerId;
-  const nameEl = document.getElementById('t-channel-name');
-  if (nameEl) nameEl.textContent = peerName;
+  const nameEl   = document.getElementById('t-channel-name');
+  const statusEl = document.getElementById('t-channel-status');
+  const avatarEl = document.getElementById('t-peer-avatar');
+  if (nameEl)   nameEl.textContent   = peerName;
+  if (statusEl) statusEl.textContent = '● Active';
+  if (avatarEl) avatarEl.textContent = initials(peerName);
+  // Highlight active chip
+  document.querySelectorAll('#t-student-chips button').forEach(b => {
+    b.style.background = b.textContent.trim().includes(peerName.split(' ')[0]) ? 'var(--navy)' : 'var(--cream)';
+    b.style.color      = b.textContent.trim().includes(peerName.split(' ')[0]) ? 'white' : 'var(--navy)';
+  });
+  switchPanel('t-chat');
   await initChat(peerId, 'channel-body-t');
 };
 window.sendChatMsg = async function(role) {
@@ -153,13 +187,15 @@ async function loadStudentData() {
 // ── TEACHER DATA ──────────────────────────────────────────────
 async function loadTeacherStudents() {
   try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id, full_name, email, subject, role')
-      .eq('teacher_id', APP.profile.id)
-      .eq('role', 'student');
+    // Use student_teachers junction table for many-to-many support
+    const { data: links, error } = await supabase
+      .from('student_teachers')
+      .select('subject, student:profiles!student_id(id, full_name, email, role)')
+      .eq('teacher_id', APP.profile.id);
 
     if (error) console.error('loadTeacherStudents:', error);
+
+    const students = (links || []).map(l => ({ ...l.student, subject: l.subject }));
 
     const row = (s) => `
       <div class="lesson-item">
@@ -174,28 +210,45 @@ async function loadTeacherStudents() {
         </div>
       </div>`;
 
-    const empty = '<div style="color:var(--text3);font-size:0.82rem;padding:0.5rem 0">No students yet — add students below</div>';
-    const html  = data?.length ? data.map(row).join('') : empty;
+    const empty = '<div style="color:var(--text3);font-size:0.82rem;padding:0.5rem 0">No students yet — add a student below</div>';
+    const html  = students.length ? students.map(row).join('') : empty;
 
     const list     = document.getElementById('t-students-list');
     const fullList = document.getElementById('t-students-full');
-    if (list)     list.innerHTML     = html;
+    if (list)     list.innerHTML = html;
     if (fullList) fullList.innerHTML = html;
+
+    // Populate student chips in chat header
+    const chips = document.getElementById('t-student-chips');
+    if (chips) {
+      if (students.length) {
+        chips.innerHTML = students.map(s => `
+          <button onclick="setActivePeer('${s.id}','${esc(s.full_name)}')" 
+            style="background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:0.2rem 0.7rem;font-size:0.72rem;cursor:pointer;color:var(--navy);font-family:inherit">
+            ${initials(s.full_name)} ${esc(s.full_name)}
+          </button>`).join('');
+      } else {
+        chips.innerHTML = '<span style="color:var(--text3);font-size:0.78rem;align-self:center">No students yet — add from Students panel</span>';
+      }
+    }
 
   } catch(e) { console.error('loadTeacherStudents:', e); }
 }
 async function loadTeacherStudentDropdown() {
   try {
-    const { data } = await supabase.from('profiles').select('id,full_name').eq('teacher_id',APP.profile.id).eq('role','student');
-    const html = data?.length ? data.map(s=>`<option value="${s.id}">${esc(s.full_name)}</option>`).join('') : '<option value="">No students</option>';
-    
-    // Populate schedule dropdown
+    const { data: links } = await supabase
+      .from('student_teachers')
+      .select('student:profiles!student_id(id, full_name)')
+      .eq('teacher_id', APP.profile.id);
+
+    const students = (links || []).map(l => l.student);
+    const html = students.length ? students.map(s=>`<option value="${s.id}">${esc(s.full_name)}</option>`).join('') : '<option value="">No students</option>';
+
     const sel = document.getElementById('sched-student');
     if (sel) sel.innerHTML = html;
-    
-    // Populate AI homework target dropdown
+
     const aiSel = document.getElementById('ai-target-student');
-    if (aiSel) aiSel.innerHTML = '<option value="">— Current lesson student —</option>' + (data?.length ? data.map(s=>`<option value="${s.id}">${esc(s.full_name)}</option>`).join('') : '');
+    if (aiSel) aiSel.innerHTML = '<option value="">— Current lesson student —</option>' + html;
   } catch(e) {}
 }
 async function triggerSubWarning() {
@@ -244,19 +297,35 @@ window.scheduleLesson = async function() {
 
 // ── ADD STUDENT ───────────────────────────────────────────────
 window.addStudent = async function() {
-  const name=document.getElementById('new-student-name')?.value.trim(), email=document.getElementById('new-student-email')?.value.trim(), subject=document.getElementById('new-student-subject')?.value||'math', lessons=parseInt(document.getElementById('new-student-lessons')?.value||'8');
-  if (!name||!email) { showToast('Please fill in name and email','warning'); return; }
+  const name    = document.getElementById('new-student-name')?.value.trim();
+  const email   = document.getElementById('new-student-email')?.value.trim();
+  const subject = document.getElementById('new-student-subject')?.value || 'math';
+  const lessons = parseInt(document.getElementById('new-student-lessons')?.value || '8');
+  if (!name || !email) { showToast('Please fill in name and email', 'warning'); return; }
   try {
-    const { data:existing } = await supabase.from('profiles').select('id').eq('email',email).single();
+    const { data: existing } = await supabase.from('profiles').select('id').eq('email', email).single();
     if (existing) {
-      await supabase.from('profiles').update({ teacher_id:APP.profile.id, subject }).eq('id',existing.id);
-      await supabase.from('subscriptions').upsert({ student_id:existing.id, teacher_id:APP.profile.id, total_lessons:lessons, used_lessons:0, status:'active' });
-      showToast('✅ '+name+' linked to your account','success');
+      // Add to student_teachers junction table (supports many-to-many)
+      await supabase.from('student_teachers').upsert({
+        student_id: existing.id,
+        teacher_id: APP.profile.id,
+        subject,
+      });
+      // Also update profiles.teacher_id for backwards compat (first teacher)
+      await supabase.from('profiles').update({ teacher_id: APP.profile.id, subject })
+        .eq('id', existing.id).is('teacher_id', null);
+      await supabase.from('subscriptions').upsert({
+        student_id: existing.id, teacher_id: APP.profile.id,
+        total_lessons: lessons, used_lessons: 0, status: 'active',
+      });
+      showToast('✅ ' + name + ' linked to your account', 'success');
     } else {
-      showToast('📧 '+email+' — ask them to sign up first, then add again','');
+      showToast('📧 ' + email + ' — ask them to sign up first, then add again', '');
     }
-    closeModal('add-student-modal'); loadTeacherStudents(); loadTeacherStudentDropdown();
-  } catch(e) { showToast('Error: '+e.message,'warning'); }
+    closeModal('add-student-modal');
+    loadTeacherStudents();
+    loadTeacherStudentDropdown();
+  } catch(e) { showToast('Error: ' + e.message, 'warning'); }
 };
 
 // ── PROFILE ───────────────────────────────────────────────────
@@ -390,6 +459,33 @@ async function loadStudentHomework() {
       </div>`;
     }).join('');
   } catch(e) { console.error('homework load:', e); }
+}
+
+// ── ONLINE STATUS & TYPING ────────────────────────────────────
+let typingTimer = null;
+
+window.handleTyping = async function(role) {
+  const channelName = APP.peerUserId ? 'typing-' + [APP.profile.id, APP.peerUserId].sort().join('-') : null;
+  if (!channelName) return;
+  // Broadcast typing via Supabase presence
+  clearTimeout(typingTimer);
+  const el = document.getElementById(role==='s' ? 'typing-indicator' : 'typing-indicator-t');
+  // Just show locally for now — full presence needs Supabase Presence
+};
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  if (diff < 60)  return 'just now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return Math.floor(diff/86400) + 'd ago';
+}
+
+async function updateOnlineStatus() {
+  try {
+    await supabase.from('profiles').update({ last_seen: new Date().toISOString() }).eq('id', APP.profile.id);
+  } catch(e) {}
 }
 
 // ── SIGN OUT + MODAL + TOAST + UTILS ─────────────────────────

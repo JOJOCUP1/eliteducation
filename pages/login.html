@@ -122,6 +122,9 @@
     </div>
 
     <button class="btn-submit" id="btn-submit" type="submit">Sign In →</button>
+    <div id="forgot-wrap" style="text-align:center;margin-top:0.5rem">
+      <button type="button" onclick="forgotPassword()" style="background:none;border:none;color:var(--navy);font-size:0.78rem;cursor:pointer;text-decoration:underline">Forgot password?</button>
+    </div>
   </form>
 
   <div class="divider"><span>or</span></div>
@@ -162,10 +165,80 @@
     const mode = sessionStorage.getItem('auth_mode');
     sessionStorage.removeItem('auth_mode');
     if (mode === 'signup') {
-      // Small delay to let auth.js module initialize switchMode
       setTimeout(() => { if (window.switchMode) window.switchMode('signup'); }, 50);
     }
   });
+
+  window.forgotPassword = async function() {
+    const email = document.getElementById('email')?.value.trim();
+    if (!email) {
+      const input = document.getElementById('email');
+      if (input) { input.focus(); input.placeholder = 'Enter your email first'; }
+      return;
+    }
+    const btn = document.querySelector('[onclick="forgotPassword()"]');
+    if (btn) { btn.textContent = 'Sending...'; btn.disabled = true; }
+    try {
+      const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+      const supa = createClient(
+        'https://iuucpfxvsabenldczyaw.supabase.co',
+        'sb_publishable_kCS9u53wrcvAQKkrb7HQwQ_tnxitFqY'
+      );
+      const { error } = await supa.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/pages/login.html?mode=reset',
+      });
+      if (error) throw error;
+      const toaster = document.getElementById('toaster');
+      const t = document.createElement('div');
+      t.className = 'toast success';
+      t.textContent = '✅ Password reset email sent! Check your inbox.';
+      toaster.appendChild(t);
+      setTimeout(() => t.remove(), 5000);
+    } catch(e) {
+      const toaster = document.getElementById('toaster');
+      const t = document.createElement('div');
+      t.className = 'toast warning';
+      t.textContent = 'Error: ' + e.message;
+      toaster.appendChild(t);
+      setTimeout(() => t.remove(), 4000);
+    }
+    if (btn) { btn.textContent = 'Forgot password?'; btn.disabled = false; }
+  };
+
+  // Handle password reset redirect
+  if (window.location.search.includes('mode=reset') || window.location.hash.includes('type=recovery')) {
+    document.addEventListener('DOMContentLoaded', function() {
+      const resetForm = document.createElement('div');
+      resetForm.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:999';
+      resetForm.innerHTML = `
+        <div style="background:white;padding:2rem;border-radius:12px;width:360px;max-width:90vw">
+          <h2 style="margin-bottom:1rem;font-size:1.1rem">Set New Password</h2>
+          <input id="new-reset-pass" type="password" placeholder="New password (min 8 chars)" 
+            style="width:100%;padding:0.75rem;border:1px solid #ccc;border-radius:6px;margin-bottom:0.75rem;font-family:inherit">
+          <button onclick="submitReset()" 
+            style="width:100%;padding:0.75rem;background:#10476a;color:white;border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.9rem">
+            Update Password
+          </button>
+        </div>`;
+      document.body.appendChild(resetForm);
+
+      window.submitReset = async function() {
+        const pass = document.getElementById('new-reset-pass')?.value;
+        if (!pass || pass.length < 8) { alert('Password must be at least 8 characters'); return; }
+        try {
+          const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+          const supa = createClient(
+            'https://iuucpfxvsabenldczyaw.supabase.co',
+            'sb_publishable_kCS9u53wrcvAQKkrb7HQwQ_tnxitFqY'
+          );
+          const { error } = await supa.auth.updateUser({ password: pass });
+          if (error) throw error;
+          resetForm.remove();
+          alert('✅ Password updated! Please sign in.');
+        } catch(e) { alert('Error: ' + e.message); }
+      };
+    });
+  }
 </script>
 </body>
 </html>
