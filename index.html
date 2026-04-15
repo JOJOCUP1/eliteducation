@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Elite Education Academy — Find your perfect teacher through AI-powered matching." />
+  <title>Elite Education Academy</title>
+  <link rel="icon" type="image/jpeg" href="assets/logo-eea.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Inter',sans-serif;background:#fffef8;color:#1a1a2e;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#fffef8}
+::-webkit-scrollbar-thumb{background:#10476a;border-radius:2px}
+
+:root{
+  --cream:#fffef8;
+  --navy:#10476a;
+  --gold:#e0a34a;
+  --rust:#cb512e;
+  --navy2:#1a6494;
+  --gold2:#f0bc6e;
+  --rust2:#e06b46;
+  --dark:#0d2f45;
+  --text:#1a1a2e;
+  --text2:#4a5568;
+  --text3:#9aa5b4;
+  --border:rgba(16,71,106,0.12);
+  --border2:rgba(16,71,106,0.25);
+  --shadow:0 4px 24px rgba(16,71,106,0.10);
+  --shadow2:0 12px 48px rgba(16,71,106,0.16)
+}
+
+.page{display:none}
+.page.active{display:block;animation:fadeUp 0.45s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  height:68px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 3rem;background:rgba(255,254,248,0.97);
+  backdrop-filter:blur(16px);border-bottom:1px solid var(--border);
+  box-shadow:0 1px 0 rgba(16,71,106,0.06)
+}
+.nav-logo{display:flex;align-items:center;gap:0.7rem;cursor:pointer;text-decoration:none}
+.nav-logo-img{height:42px;width:auto;object-fit:contain}
+.nav-logo-text{display:flex;flex-direction:column;line-height:1.2}
+.nav-logo-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--navy);letter-spacing:0.04em}
+.nav-logo-sub{font-size:0.58rem;color:var(--gold);letter-spacing:0.22em;text-transform:uppercase;font-weight:600}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-link{background:none;border:none;font-family:'Inter',sans-serif;font-size:0.82rem;color:var(--text2);cursor:pointer;letter-spacing:0.04em;transition:color 0.2s;padding:0}
+.nav-link:hover{color:var(--navy)}
+.nav-cta{background:var(--navy);color:white;border:none;padding:0.55rem 1.5rem;font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:500;cursor:pointer;letter-spacing:0.06em;transition:all 0.25s;border-radius:3px}
+.nav-cta:hover{background:var(--dark);transform:translateY(-1px);box-shadow:var(--shadow)}
+
+/* HERO */
+#hero{padding-top:68px;min-height:100vh;background:var(--cream);position:relative;overflow:hidden}
+.hero-pattern{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(16,71,106,0.05) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black,transparent)}
+.hero-top-bar{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--gold),var(--rust))}
+.hero-inner{max-width:1200px;margin:0 auto;padding:5rem 3rem 4rem;display:grid;grid-template-columns:1fr 440px;gap:5rem;align-items:center;min-height:calc(100vh - 68px)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:0.6rem;background:rgba(224,163,74,0.12);border:1px solid rgba(224,163,74,0.35);padding:0.4rem 1rem;font-size:0.68rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:1.8rem;border-radius:2px}
+.eyebrow-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero-h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,4.5vw,4.4rem);font-weight:700;line-height:1.1;color:var(--navy);margin-bottom:1.5rem;letter-spacing:-0.01em}
+.hero-h1 em{color:var(--gold);font-style:italic;display:block}
+.hero-p{font-size:0.95rem;color:var(--text2);line-height:1.85;max-width:480px;margin-bottom:2.5rem;font-weight:300}
+.hero-btns{display:flex;align-items:center;gap:1rem;margin-bottom:3.5rem;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:0.5rem;background:var(--navy);color:white;border:none;padding:0.9rem 2.3rem;font-family:'Inter',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;letter-spacing:0.06em;transition:all 0.25s;border-radius:3px}
+.btn-primary:hover{background:var(--dark);transform:translateY(-2px);box-shadow:var(--shadow2)}
+.btn-secondary{display:inline-flex;align-items:center;gap:0.5rem;background:transparent;color:var(--navy);border:1.5px solid var(--navy);padding:0.88rem 2rem;font-family:'Inter',sans-serif;font-size:0.88rem;font-weight:500;cursor:pointer;letter-spacing:0.06em;transition:all 0.25s;border-radius:3px}
+.btn-secondary:hover{background:var(--navy);color:white}
+.hero-stats{display:flex;gap:2.8rem;padding-top:2.5rem;border-top:1px solid var(--border)}
+.stat-n{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--navy);font-weight:700;line-height:1;margin-bottom:4px}
+.stat-l{font-size:0.68rem;color:var(--text3);letter-spacing:0.18em;text-transform:uppercase;font-weight:400}
+
+/* HERO CARD */
+.hero-card{background:white;border:1px solid var(--border);border-radius:8px;padding:2rem;box-shadow:var(--shadow2);position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--gold))}
+.hc-label{font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3);font-weight:500;margin-bottom:1.4rem}
+.hc-subjects{display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem}
+.hc-subject{display:flex;align-items:center;gap:1rem;padding:1rem 1.1rem;background:#f7f6f0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all 0.22s}
+.hc-subject:hover{border-color:var(--navy);background:rgba(16,71,106,0.04);transform:translateX(2px)}
+.hc-icon{width:42px;height:42px;border-radius:6px;object-fit:contain;flex-shrink:0}
+.hc-name{font-size:0.9rem;color:var(--navy);font-weight:600;margin-bottom:2px}
+.hc-sub{font-size:0.68rem;color:var(--text3)}
+.hc-arrow{margin-left:auto;color:var(--text3);font-size:0.9rem;transition:all 0.2s}
+.hc-subject:hover .hc-arrow{color:var(--navy);transform:translateX(3px)}
+.hc-info{background:rgba(224,163,74,0.1);border:1px solid rgba(224,163,74,0.3);border-radius:6px;padding:0.9rem 1rem;display:flex;align-items:center;gap:0.75rem}
+.hc-info-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;flex-shrink:0;animation:blink 2s infinite}
+.hc-info-text{font-size:0.75rem;color:#7a5c1e;line-height:1.5}
+.hc-info-text strong{color:var(--rust);display:block;font-size:0.8rem;margin-bottom:1px}
+
+/* FEATURES */
+.features-bar{background:var(--navy);padding:1.5rem 3rem;display:flex;justify-content:center;gap:4rem}
+.feat{display:flex;align-items:center;gap:0.8rem}
+.feat-icon{width:34px;height:34px;background:rgba(255,255,255,0.1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.feat-t strong{display:block;font-size:0.82rem;color:white;font-weight:600;margin-bottom:1px}
+.feat-t span{font-size:0.72rem;color:rgba(255,255,255,0.55)}
+
+/* PAGE LAYOUT */
+.page-wrap{padding-top:68px;min-height:100vh;background:var(--cream)}
+.page-container{max-width:920px;margin:0 auto;padding:4rem 2rem}
+
+/* STEPS */
+.steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:2.8rem}
+.step{display:flex;align-items:center;gap:0.55rem;font-size:0.72rem;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;font-weight:500}
+.step.active{color:var(--navy)}
+.step.done{color:rgba(16,71,106,0.45)}
+.step-n{width:26px;height:26px;border:1.5px solid currentColor;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.66rem;font-weight:700;flex-shrink:0}
+.step.active .step-n{background:var(--navy);color:white;border-color:var(--navy)}
+.step.done .step-n{background:rgba(16,71,106,0.1);color:var(--navy)}
+.step-line{width:56px;height:1px;background:var(--border);margin:0 0.8rem}
+
+.section-eyebrow{font-size:0.68rem;letter-spacing:0.32em;text-transform:uppercase;color:var(--rust);font-weight:600;text-align:center;margin-bottom:0.7rem}
+.section-title{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;color:var(--navy);text-align:center;margin-bottom:0.7rem;letter-spacing:-0.01em}
+.section-sub{font-size:0.88rem;color:var(--text2);text-align:center;font-weight:300;line-height:1.7;margin-bottom:2.5rem}
+
+/* SUBJECTS */
+.subjects-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.5rem}
+.subj-card{background:white;border:1.5px solid var(--border);border-radius:8px;padding:2.5rem 2rem;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;text-align:center}
+.subj-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--gold));transform:scaleX(0);transition:transform 0.35s;transform-origin:left}
+.subj-card:hover::after,.subj-card.selected::after{transform:scaleX(1)}
+.subj-card:hover,.subj-card.selected{border-color:var(--navy);transform:translateY(-4px);box-shadow:var(--shadow2)}
+.subj-check{position:absolute;top:1rem;right:1rem;width:24px;height:24px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:white;opacity:0;transition:opacity 0.22s}
+.subj-card.selected .subj-check{opacity:1}
+.subj-logo{width:90px;height:90px;object-fit:contain;margin:0 auto 1.4rem;display:block}
+.subj-name{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--navy);font-weight:700;margin-bottom:0.6rem}
+.subj-desc{font-size:0.8rem;color:var(--text2);line-height:1.75;font-weight:300}
+.subj-footer{display:flex;align-items:center;justify-content:center;margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--border);gap:0}
+.subj-av{width:28px;height:28px;border-radius:50%;background:#eaf0f6;border:2px solid white;display:flex;align-items:center;justify-content:center;font-size:0.58rem;color:var(--navy);font-weight:700;margin-left:-7px}
+.subj-av:first-child{margin-left:0}
+.subj-count{font-size:0.72rem;color:var(--text3);margin-left:0.7rem}
+
+/* CONTINUE BAR */
+.continue-bar{background:white;border:1px solid var(--border);border-radius:8px;padding:1.3rem 1.8rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;box-shadow:var(--shadow)}
+.ci-lbl{font-size:0.68rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px}
+.ci-val{font-size:0.92rem;color:var(--navy);font-weight:600}
+.btn-continue{background:var(--navy);color:white;border:none;padding:0.8rem 2.2rem;border-radius:3px;font-family:'Inter',sans-serif;font-size:0.84rem;font-weight:600;cursor:pointer;letter-spacing:0.07em;transition:all 0.25s;opacity:0.3;pointer-events:none;white-space:nowrap}
+.btn-continue.ready{opacity:1;pointer-events:all}
+.btn-continue.ready:hover{background:var(--dark);transform:translateY(-1px);box-shadow:var(--shadow)}
+
+/* QUIZ */
+.quiz-container{max-width:700px;margin:0 auto;padding:3.5rem 2rem}
+.quiz-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.quiz-meta{font-size:0.78rem;color:var(--text3);font-weight:400}
+.quiz-meta strong{color:var(--navy);font-weight:700}
+.quiz-badge{display:inline-flex;align-items:center;gap:0.45rem;background:rgba(16,71,106,0.07);border:1px solid var(--border2);padding:0.3rem 0.9rem;font-size:0.65rem;color:var(--navy);letter-spacing:0.18em;text-transform:uppercase;font-weight:600;border-radius:20px}
+.quiz-badge::before{content:'';width:5px;height:5px;background:var(--gold);border-radius:50%}
+.progress-track{height:3px;background:#e8e5d8;border-radius:2px;margin-bottom:2.5rem;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:2px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1)}
+.q-card{background:white;border:1px solid var(--border);border-radius:8px;padding:2.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.q-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--gold))}
+.q-num-label{font-size:0.63rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.75rem}
+.q-num-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.q-text{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--navy);line-height:1.5;font-weight:600;margin-bottom:2rem}
+.options-list{display:flex;flex-direction:column;gap:0.6rem}
+.opt-btn{display:flex;align-items:flex-start;gap:1rem;background:#fafaf4;border:1.5px solid #e8e5d8;border-radius:6px;padding:1rem 1.15rem;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.86rem;color:var(--text2);transition:all 0.22s;text-align:left;width:100%}
+.opt-btn:hover{border-color:var(--navy);color:var(--navy);background:rgba(16,71,106,0.03)}
+.opt-btn.sel{border-color:var(--navy);color:var(--navy);background:rgba(16,71,106,0.05)}
+.opt-letter{width:28px;height:28px;flex-shrink:0;border:1.5px solid currentColor;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;transition:all 0.22s;margin-top:-1px}
+.opt-btn.sel .opt-letter{background:var(--navy);border-color:var(--navy);color:white}
+.opt-text{line-height:1.55;padding-top:3px}
+.quiz-nav{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.btn-back{display:flex;align-items:center;gap:0.4rem;background:transparent;border:1.5px solid var(--border2);border-radius:4px;color:var(--text2);padding:0.78rem 1.5rem;font-family:'Inter',sans-serif;font-size:0.82rem;cursor:pointer;transition:all 0.22s}
+.btn-back:hover{border-color:var(--navy);color:var(--navy)}
+.btn-next{display:flex;align-items:center;gap:0.4rem;background:var(--navy);color:white;border:none;border-radius:4px;padding:0.78rem 2.2rem;font-family:'Inter',sans-serif;font-size:0.84rem;font-weight:600;cursor:pointer;letter-spacing:0.07em;opacity:0.3;pointer-events:none;transition:all 0.25s}
+.btn-next.ready{opacity:1;pointer-events:all}
+.btn-next.ready:hover{background:var(--dark);transform:translateY(-1px);box-shadow:var(--shadow)}
+
+/* RESULT */
+.result-container{max-width:840px;margin:0 auto;padding:4rem 2rem 6rem}
+.result-head{text-align:center;margin-bottom:3rem;padding-bottom:3rem;border-bottom:1px solid var(--border)}
+.result-tag{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(203,81,46,0.08);border:1px solid rgba(203,81,46,0.25);padding:0.4rem 1.1rem;font-size:0.67rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--rust);margin-bottom:1.4rem;font-weight:600;border-radius:20px}
+.result-title{font-family:'Playfair Display',serif;font-size:2.4rem;color:var(--navy);font-weight:700;margin-bottom:0.7rem;letter-spacing:-0.01em}
+.result-sub{font-size:0.88rem;color:var(--text2);font-weight:300;line-height:1.75;max-width:500px;margin:0 auto}
+
+/* BEST CARD */
+.best-wrap{background:white;border:2px solid var(--navy);border-radius:10px;overflow:hidden;margin-bottom:2rem;box-shadow:var(--shadow2)}
+.best-stripe{height:4px;background:linear-gradient(90deg,var(--navy),var(--gold),var(--rust))}
+.best-body{padding:2.5rem}
+.best-top{display:flex;align-items:flex-start;gap:2rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.best-avatar{width:72px;height:72px;flex-shrink:0;border-radius:10px;background:linear-gradient(135deg,#eaf0f6,#d4e4f0);border:2px solid var(--navy);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--navy);font-weight:700}
+.best-info{flex:1}
+.best-badge{display:inline-flex;align-items:center;gap:0.4rem;background:var(--navy);color:white;font-size:0.6rem;font-weight:700;padding:0.25rem 0.85rem;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.6rem;border-radius:2px}
+.best-name{font-family:'Playfair Display',serif;font-size:1.65rem;color:var(--navy);font-weight:700;margin-bottom:0.3rem}
+.best-subj{font-size:0.72rem;color:var(--gold);letter-spacing:0.18em;text-transform:uppercase;font-weight:600}
+.best-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.best-sect-label{font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--text3);font-weight:600;margin-bottom:0.8rem}
+.traits-wrap{display:flex;flex-wrap:wrap;gap:0.5rem}
+.trait-tag{background:#f0ede0;border:1px solid #d8d3c0;font-size:0.7rem;color:var(--navy);padding:0.3rem 0.8rem;border-radius:20px;font-weight:500}
+.compat-sect{grid-column:1/-1}
+.compat-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.6rem}
+.compat-pct{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--navy);font-weight:700;line-height:1}
+.compat-track{height:6px;background:#e8e5d8;border-radius:3px;overflow:hidden}
+.compat-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:3px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1)}
+.btn-profile{display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;margin-top:1.5rem;padding:0.85rem;background:transparent;border:1.5px solid var(--navy);border-radius:6px;color:var(--navy);font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;letter-spacing:0.06em;transition:all 0.25s}
+.btn-profile:hover{background:var(--navy);color:white}
+
+/* RUNNERS */
+.runners-head{font-size:0.68rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--text3);font-weight:600;margin-bottom:1rem}
+.runner-row{display:flex;align-items:center;gap:1rem;background:white;border:1px solid var(--border);border-radius:8px;padding:1rem 1.4rem;margin-bottom:0.6rem;transition:all 0.22s;cursor:pointer}
+.runner-row:hover{border-color:var(--navy);box-shadow:var(--shadow)}
+.run-av{width:42px;height:42px;flex-shrink:0;border-radius:8px;background:#eaf0f6;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:0.95rem;color:var(--navy);font-weight:700}
+.run-name{font-size:0.9rem;color:var(--navy);font-weight:500}
+.run-right{margin-left:auto;display:flex;align-items:center;gap:0.8rem}
+.run-bar-track{width:70px;height:4px;background:#e8e5d8;border-radius:2px;overflow:hidden}
+.run-bar-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold))}
+.run-pct{font-size:0.8rem;color:var(--navy);font-weight:700;min-width:36px;text-align:right}
+.run-view{font-size:0.72rem;color:var(--text3);transition:color 0.2s}
+.runner-row:hover .run-view{color:var(--navy)}
+.restart-row{text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
+.btn-restart{background:transparent;border:1.5px solid var(--border2);color:var(--text2);padding:0.75rem 2rem;border-radius:4px;font-family:'Inter',sans-serif;font-size:0.8rem;cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.22s}
+.btn-restart:hover{border-color:var(--navy);color:var(--navy)}
+
+/* MODAL OVERLAY */
+.modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(16,71,106,0.5);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex;animation:fadeOverlay 0.3s ease}
+@keyframes fadeOverlay{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--cream);border-radius:12px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;position:relative;box-shadow:0 32px 80px rgba(16,71,106,0.25);animation:slideUp 0.35s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* MODAL HEADER */
+.modal-header{background:var(--navy);padding:2rem 2.5rem;display:flex;align-items:flex-start;gap:1.5rem;position:sticky;top:0;z-index:10}
+.modal-avatar{width:72px;height:72px;border-radius:10px;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.6rem;color:white;font-weight:700;flex-shrink:0}
+.modal-header-info{flex:1}
+.modal-subject-badge{display:inline-block;background:rgba(255,255,255,0.15);color:var(--gold2);font-size:0.62rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;padding:0.25rem 0.75rem;border-radius:2px;margin-bottom:0.5rem}
+.modal-name{font-family:'Playfair Display',serif;font-size:1.6rem;color:white;font-weight:700;margin-bottom:0.3rem}
+.modal-role{font-size:0.78rem;color:rgba(255,255,255,0.6);letter-spacing:0.05em}
+.modal-close{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;transition:all 0.2s;flex-shrink:0;margin-left:auto;font-family:'Inter',sans-serif}
+.modal-close:hover{background:rgba(255,255,255,0.2)}
+
+/* MODAL BODY */
+.modal-body{padding:2.5rem}
+.modal-sect{margin-bottom:2rem}
+.modal-sect-title{font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem}
+.modal-sect-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.modal-bio{font-size:0.88rem;color:var(--text2);line-height:1.85;font-weight:300}
+.modal-tags{display:flex;flex-wrap:wrap;gap:0.5rem}
+.modal-tag{background:white;border:1px solid var(--border);border-radius:20px;font-size:0.72rem;color:var(--navy);padding:0.35rem 0.9rem;font-weight:500}
+.modal-tag.lang{background:rgba(16,71,106,0.07);border-color:rgba(16,71,106,0.2)}
+.modal-logos{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.modal-logo{height:52px;object-fit:contain}
+
+/* BOOKING */
+.booking-sect{background:white;border:1px solid var(--border);border-radius:10px;padding:2rem;margin-top:1.5rem}
+.booking-title{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--navy);font-weight:700;margin-bottom:0.5rem}
+.booking-sub{font-size:0.82rem;color:var(--text2);line-height:1.6;margin-bottom:1.5rem;font-weight:300}
+.booking-form{display:flex;flex-direction:column;gap:1rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-group{display:flex;flex-direction:column;gap:0.4rem}
+.form-label{font-size:0.72rem;color:var(--navy);font-weight:600;letter-spacing:0.06em;text-transform:uppercase}
+.form-input,.form-select,.form-textarea{padding:0.75rem 1rem;background:#fafaf4;border:1.5px solid #e0ddd0;border-radius:6px;font-family:'Inter',sans-serif;font-size:0.86rem;color:var(--text);transition:border-color 0.2s;outline:none;width:100%}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--navy)}
+.form-textarea{resize:vertical;min-height:90px}
+.form-select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2310476a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem;cursor:pointer}
+.booking-actions{display:flex;flex-direction:column;gap:0.75rem;margin-top:0.5rem}
+.btn-book{background:var(--navy);color:white;border:none;border-radius:6px;padding:0.9rem 2rem;font-family:'Inter',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;letter-spacing:0.06em;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:0.5rem}
+.btn-book:hover{background:var(--dark);transform:translateY(-1px);box-shadow:var(--shadow)}
+.booking-divider{display:flex;align-items:center;gap:1rem}
+.booking-divider::before,.booking-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.booking-divider span{font-size:0.72rem;color:var(--text3);font-weight:500;white-space:nowrap}
+.btn-facebook{background:#1877f2;color:white;border:none;border-radius:6px;padding:0.85rem 2rem;font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:0.65rem;text-decoration:none;width:100%}
+.btn-facebook:hover{background:#1464cc;transform:translateY(-1px)}
+.fb-icon{width:20px;height:20px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:#1877f2;font-weight:900;flex-shrink:0}
+.booking-success{display:none;background:rgba(16,71,106,0.06);border:1px solid rgba(16,71,106,0.2);border-radius:8px;padding:1.5rem;text-align:center;margin-top:1rem}
+.booking-success.show{display:block;animation:fadeUp 0.4s ease}
+.success-icon{font-size:2rem;margin-bottom:0.75rem}
+.success-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--navy);font-weight:700;margin-bottom:0.5rem}
+.success-text{font-size:0.82rem;color:var(--text2);line-height:1.6}
+
+/* FOOTER */
+.site-footer{background:var(--navy);color:rgba(255,255,255,0.7);padding:2.5rem 3rem;display:flex;align-items:center;justify-content:space-between}
+.footer-logo-wrap{display:flex;align-items:center;gap:0.75rem}
+.footer-logo-img{height:36px;opacity:0.9;background:white;padding:2px;border-radius:6px}
+.footer-brand{font-family:'Playfair Display',serif;font-size:0.95rem;color:rgba(255,255,255,0.85);font-weight:600}
+.footer-copy{font-size:0.72rem}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .hero-inner{grid-template-columns:1fr;min-height:auto;gap:3rem;padding:3rem 2rem}
+  .hero-card-col{display:none}
+  .features-bar{flex-wrap:wrap;gap:1.5rem;padding:1.5rem 2rem}
+  .navbar{padding:0 1.5rem}
+  .nav-link{display:none}
+}
+@media(max-width:640px){
+  .subjects-grid{grid-template-columns:1fr}
+  .best-grid{grid-template-columns:1fr}
+  .best-top{flex-direction:column;gap:1rem}
+  .form-row{grid-template-columns:1fr}
+  .continue-bar{flex-direction:column;align-items:flex-start}
+  .btn-continue{width:100%;text-align:center}
+  .hero-stats{flex-wrap:wrap;gap:1.5rem}
+  .site-footer{flex-direction:column;gap:0.75rem;text-align:center}
+  .steps{gap:0}
+  .step-line{width:28px}
+  .modal-body{padding:1.5rem}
+  .modal-header{padding:1.5rem}
+}
+
+.nav-platform-btn{background:var(--gold);color:var(--dark);border:none;padding:.5rem 1.2rem;font-family:'Inter',sans-serif;font-size:.76rem;font-weight:700;cursor:pointer;letter-spacing:.06em;border-radius:3px;margin-left:.5rem;transition:all .2s}
+.nav-platform-btn:hover{background:var(--gold2)}
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" onclick="showPage('hero')" href="#">
+    <img src="assets/logo-eea.jpg" alt="EEA" class="nav-logo-img" />
+    <div class="nav-logo-text">
+      <span class="nav-logo-name">Elite Education</span>
+      <span class="nav-logo-sub">Academy</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link" onclick="showPage('hero')">Home</button>
+    <button class="nav-link" onclick="showPage('subjects')">Subjects</button>
+    <button class="nav-link" onclick="goToLogin('login')" id="nav-signin-btn">Sign In</button>
+    <button class="nav-cta" onclick="goToLogin('signup')" id="nav-signup-btn">Sign Up</button>
+    <button class="nav-platform-btn" onclick="goPlatform()" id="nav-platform-btn" style="display:none">▶ Platform</button>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════════
+     PAGE: HERO
+══════════════════════════════════════ -->
+<div id="hero" class="page active">
+
+  <div class="hero-pattern"></div>
+  <div class="hero-top-bar"></div>
+
+  <div class="hero-inner">
+
+    <!-- LEFT -->
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="eyebrow-dot"></div>
+        AI-Powered Education Matching
+      </div>
+      <h1 class="hero-h1">
+        Discover Your
+        <em>Perfect Teacher</em>
+      </h1>
+      <p class="hero-p">
+        Take our intelligent subject assessment and get matched with the educator
+        whose teaching style aligns perfectly with how you learn best.
+        Personalized. Precise. Powerful.
+      </p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('subjects')">Begin Assessment &nbsp;&#8594;</button>
+        <button class="btn-secondary" onclick="showPage('subjects')">View Subjects</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-n">9</div><div class="stat-l">Expert Teachers</div></div>
+        <div><div class="stat-n">2</div><div class="stat-l">Subjects</div></div>
+        <div><div class="stat-n">AI</div><div class="stat-l">Match Engine</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="hero-card-col">
+      <div class="hero-card">
+        <div class="hc-label">Choose Your Subject</div>
+        <div class="hc-subjects">
+
+          <div class="hc-subject" onclick="quickSelect('math')">
+            <img src="assets/logo-ema.jpg" alt="EMA" class="hc-icon" />
+            <div>
+              <div class="hc-name">Mathematics</div>
+              <div class="hc-sub">Algebra &middot; Calculus &middot; Logic</div>
+            </div>
+            <div class="hc-arrow">&#8594;</div>
+          </div>
+
+          <div class="hc-subject" onclick="quickSelect('french')">
+            <img src="assets/logo-efla.jpg" alt="EFLA" class="hc-icon" />
+            <div>
+              <div class="hc-name">French Language</div>
+              <div class="hc-sub">Grammar &middot; Culture &middot; Fluency</div>
+            </div>
+            <div class="hc-arrow">&#8594;</div>
+          </div>
+
+        </div>
+        <div class="hc-info">
+          <div class="hc-info-dot"></div>
+          <div class="hc-info-text">
+            <strong>AI-Powered Matching</strong>
+            6 questions &mdash; results in under 2 minutes
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /hero-inner -->
+
+  <!-- FEATURES -->
+  <div class="features-bar">
+    <div class="feat"><div class="feat-icon">&#10022;</div><div class="feat-t"><strong>Smart Matching</strong><span>AI-powered compatibility</span></div></div>
+    <div class="feat"><div class="feat-icon">&#9670;</div><div class="feat-t"><strong>Personalized</strong><span>Tailored to your style</span></div></div>
+    <div class="feat"><div class="feat-icon">&#9675;</div><div class="feat-t"><strong>Expert Teachers</strong><span>9 qualified educators</span></div></div>
+    <div class="feat"><div class="feat-icon">&#8857;</div><div class="feat-t"><strong>Instant Results</strong><span>Match in under 2 minutes</span></div></div>
+  </div>
+
+</div><!-- /hero -->
+
+
+<!-- ══════════════════════════════════════
+     PAGE: SUBJECTS
+══════════════════════════════════════ -->
+<div id="subjects" class="page">
+  <div class="page-wrap">
+    <div class="page-container">
+
+      <div class="steps">
+        <div class="step active" id="step1"><div class="step-n">1</div>Subject</div>
+        <div class="step-line"></div>
+        <div class="step" id="step2"><div class="step-n">2</div>Assessment</div>
+        <div class="step-line"></div>
+        <div class="step" id="step3"><div class="step-n">3</div>Your Match</div>
+      </div>
+
+      <p class="section-eyebrow">Step 1 &middot; Subject Selection</p>
+      <h2 class="section-title">Choose Your Subject</h2>
+      <p class="section-sub">Select the subject you'd like to be assessed in to find your ideal teacher</p>
+
+      <div class="subjects-grid">
+
+        <div class="subj-card" id="sc-math" onclick="selectSubject('math', this)">
+          <div class="subj-check">&#10003;</div>
+          <img src="assets/logo-ema.jpg" alt="Elite Mathematics Academy" class="subj-logo" />
+          <div class="subj-name">Mathematics</div>
+          <p class="subj-desc">Algebra, geometry, calculus and analytical reasoning. Build strong logical foundations with expert guidance from our team of 7 dedicated teachers.</p>
+          <div class="subj-footer">
+            <div class="subj-av">LV</div>
+            <div class="subj-av">MK</div>
+            <div class="subj-av">SI</div>
+            <div class="subj-av">NY</div>
+            <div class="subj-av">+3</div>
+            <span class="subj-count">7 teachers</span>
+          </div>
+        </div>
+
+        <div class="subj-card" id="sc-french" onclick="selectSubject('french', this)">
+          <div class="subj-check">&#10003;</div>
+          <img src="assets/logo-efla.jpg" alt="Elite French Language Academy" class="subj-logo" />
+          <div class="subj-name">French Language</div>
+          <p class="subj-desc">Grammar, literature, culture and conversation. Master the language of elegance with our specialist French teachers and their immersive approach.</p>
+          <div class="subj-footer">
+            <div class="subj-av">NG</div>
+            <div class="subj-av">NB</div>
+            <span class="subj-count">2 teachers</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="continue-bar">
+        <div class="continue-info">
+          <div class="ci-lbl">Selected subject</div>
+          <div class="ci-val" id="selLabel">-- Select a subject above --</div>
+        </div>
+        <button class="btn-continue" id="contBtn" onclick="startQuiz()">Continue to Assessment &nbsp;&#8594;</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /subjects -->
+
+
+<!-- ══════════════════════════════════════
+     PAGE: QUIZ
+══════════════════════════════════════ -->
+<div id="quiz" class="page">
+  <div class="page-wrap">
+    <div class="quiz-container">
+
+      <div class="quiz-top">
+        <div class="quiz-meta">Question <strong id="qNum">1</strong> of <strong id="qTotal">6</strong></div>
+        <div class="quiz-badge" id="qBadge">Mathematics</div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+
+      <div class="q-card">
+        <div class="q-num-label" id="qLabel">Question 01</div>
+        <div class="q-text" id="qText">Loading question...</div>
+        <div class="options-list" id="optionsWrap"></div>
+      </div>
+
+      <div class="quiz-nav">
+        <button class="btn-back" onclick="prevQuestion()">&#8592; Back</button>
+        <button class="btn-next" id="nextBtn" onclick="nextQuestion()">Next &#8594;</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /quiz -->
+
+
+<!-- ══════════════════════════════════════
+     PAGE: RESULT
+══════════════════════════════════════ -->
+<div id="result" class="page">
+  <div class="page-wrap">
+    <div class="result-container">
+
+      <div class="result-head">
+        <div class="result-tag">&#10022;&nbsp; Assessment Complete</div>
+        <h2 class="result-title">Your Ideal Teacher</h2>
+        <p class="result-sub" id="resultSub">Based on your personalized assessment, here is your best teacher match.</p>
+        <div id="result-auth-bar" style="display:flex;align-items:center;justify-content:center;gap:0.75rem;margin-top:1.4rem;flex-wrap:wrap">
+          <button onclick="goToLogin('signup')" style="background:var(--navy);color:white;border:none;padding:0.7rem 1.8rem;border-radius:6px;font-family:Inter,sans-serif;font-size:0.84rem;font-weight:600;cursor:pointer;letter-spacing:0.05em">Create Account &rarr;</button>
+          <button onclick="goToLogin('login')" style="background:transparent;color:var(--navy);border:1.5px solid var(--navy);padding:0.68rem 1.6rem;border-radius:6px;font-family:Inter,sans-serif;font-size:0.84rem;font-weight:600;cursor:pointer;letter-spacing:0.05em">Sign In</button>
+        </div>
+      </div>
+
+      <div id="bestCard"></div>
+
+      <div style="margin-top:2rem">
+        <p class="runners-head">Also Compatible</p>
+        <div id="runnersWrap"></div>
+      </div>
+
+      <div class="restart-row">
+        <button class="btn-restart" onclick="restart()">&#8635;&nbsp; Start New Assessment</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /result -->
+
+
+<!-- ══════════════════════════════════════
+     TEACHER PROFILE MODAL
+══════════════════════════════════════ -->
+<div id="teacherModal" class="modal-overlay">
+  <div class="modal-box">
+    <!-- Content injected by JS -->
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-logo-wrap">
+    <img src="assets/logo-eea.jpg" alt="EEA" class="footer-logo-img" />
+    <span class="footer-brand">Elite Education Academy</span>
+  </div>
+  <div class="footer-copy">&copy; 2026 Elite Education Academy. All rights reserved.</div>
+</footer>
+
+
+<script>
+'use strict';
+
+/* =============================================
+   TEACHER DATA — full profiles
+============================================= */
+var TEACHERS = {
+  math: [
+    {
+      id: 'luka',
+      name: 'Luka Vardosanidze',
+      role: 'Mathematics Teacher',
+      subject: 'math',
+      bio: 'Luka specializes in higher-level mathematics with a particular focus on algebra, calculus, and competition preparation. His analytical, structured teaching method has helped dozens of students achieve top scores in national and international competitions. He believes in building deep conceptual understanding before moving to practice.',
+      traits: ['Algebra', 'Calculus', 'Problem Solving', 'Competition Prep'],
+      languages: ['Georgian', 'English'],
+      styles: ['Structured', 'Analytical', 'Rigorous'],
+      fbLink: 'https://www.facebook.com/share/188TVSar8k/?mibextid=wwXIfr',
+      scores: { analytical:5, creative:3, patient:4, structured:5, conversational:2 }
+    },
+    {
+      id: 'maia',
+      name: 'Maia Khustsishvili',
+      role: 'Mathematics Teacher',
+      subject: 'math',
+      bio: 'Maia brings mathematics to life through visual and conceptual approaches. Her lessons make abstract ideas tangible, and her patient, encouraging style creates a safe space for students to ask questions and explore. Particularly strong in geometry and foundational mathematics.',
+      traits: ['Geometry', 'Visual Learning', 'Foundations', 'Conceptual'],
+      languages: ['Georgian', 'Russian'],
+      styles: ['Visual', 'Patient', 'Encouraging'],
+      fbLink: 'https://www.facebook.com/share/188TVSar8k/?mibextid=wwXIfr',
+      scores: { analytical:4, creative:5, patient:5, structured:3, conversational:4 }
+    },
+    {
+      id: 'saba',
+      name: 'Saba Inaneishvili',
+      role: 'Mathematics Teacher',
+      subject: 'math',
+      bio: 'Saba is a dynamic, fast-paced teacher who thrives in competitive environments. His lessons are intense and efficient, ideal for students aiming for top exam performance and olympiad participation. Known for his sharp problem-solving techniques and direct teaching style.',
+      traits: ['Competition Math', 'Speed', 'Logic', 'Olympiad Prep'],
+      languages: ['Georgian', 'English'],
+      styles: ['Fast-paced', 'Competitive', 'Direct'],
+      fbLink: 'https://www.facebook.com/share/188TVSar8k/?mibextid=wwXIfr',
+      scores: { analytical:5, creative:2, patient:2, structured:5, conversational:2 }
+    },
+    {
+      id: 'nino',
+      name: 'Nino Yuljanishvili',
+      role: 'Mathematics Teacher',
+      subject: 'math',
+      bio: 'Nino is the teacher who never gives up on a student. Her step-by-step approach ensures that no one falls behind, and her warm, supportive attitude builds confidence alongside mathematical ability. Perfect for students who need to strengthen their foundations or have had difficult experiences with math.',
+      traits: ['Step-by-step', 'Supportive', 'Foundations', 'Confidence Building'],
+      languages: ['Georgian'],
+      styles: ['Patient', 'Supportive', 'Methodical'],
+      fbLink: 'https://www.facebook.com/share/188TVSar8k/?mibextid=wwXIfr',
+      scores: { analytical:3, creative:3, patient:5, structured:4, conversational:5 }
+    },
+    {
+      id: 'cotne',
+      name: 'Cotne Mgeladze',
+      role: 'Mathematics Teacher',
+      subject: 'math',
+      bio: 'Cotne bridges the gap between abstract math and the real world. His lessons use statistics, data, and everyday examples to make mathematics immediately relevant and engaging. Strong in applied mathematics and statistics, he is ideal for students who want to understand why math matters.',
+      traits: ['Statistics', 'Applied Math', 'Real World', 'Data'],
+      languages: ['Georgian', 'English'],
+      styles: ['Conversational', 'Applied', 'Contextual'],
+      fbLink: 'https://www.facebook.com/share/188TVSar8k/?mibextid=wwXIfr',
+      scores: { analytical:4, creative:4, patient:3, structured:3, conversational:5 }
+    },
+    {
+      id: 'ana',
+      name: 'Ana Nachyebia',
+      role: 'Mathematics Teacher',
+      subject: 'math',
+      bio: 'Ana prepares students for university-level mathematics and rigorous national exams. Her thorough, disciplined approach leaves no topic uncovered. Students who work with Ana gain not just knowledge but the academic habits that will serve them throughout higher education.',
+      traits: ['Calculus', 'University Prep', 'Rigor', 'Exam Strategy'],
+      languages: ['Georgian', 'English'],
+      styles: ['Rigorous', 'Thorough', 'Disciplined'],
+      fbLink: 'https://www.facebook.com/share/188TVSar8k/?mibextid=wwXIfr',
+      scores: { analytical:5, creative:2, patient:4, structured:5, conversational:3 }
+    },
+    {
+      id: 'megi',
+      name: 'Megi Diasamnidze',
+      role: 'Mathematics Teacher',
+      subject: 'math',
+      bio: 'Megi makes mathematics an adventure. Her creative, exploratory teaching methods inspire curiosity and a genuine love of numbers. She uses stories, games, and unconventional approaches to help students discover mathematical concepts for themselves, making learning deeply memorable.',
+      traits: ['Creative Methods', 'Conceptual', 'Exploratory', 'Engaging'],
+      languages: ['Georgian', 'English', 'Russian'],
+      styles: ['Creative', 'Exploratory', 'Inspiring'],
+      fbLink: 'https://www.facebook.com/share/188TVSar8k/?mibextid=wwXIfr',
+      scores: { analytical:3, creative:5, patient:5, structured:2, conversational:4 }
+    }
+  ],
+  french: [
+    {
+      id: 'naniko',
+      name: 'Naniko Gogoladze',
+      role: 'French Language Teacher',
+      subject: 'french',
+      bio: 'Naniko brings the precision and elegance of the French language to every lesson. With a focus on grammar, reading, and written expression, she builds a solid linguistic foundation that enables true fluency. Her structured, analytical approach is ideal for students preparing for DELF/DALF examinations or academic study in French.',
+      traits: ['Grammar', 'Reading', 'Writing', 'DELF/DALF Prep'],
+      languages: ['Georgian', 'French', 'English'],
+      styles: ['Structured', 'Analytical', 'Academic'],
+      fbLink: 'https://www.facebook.com/share/185ffAZPgR/?mibextid=wwXIfr',
+      scores: { analytical:5, creative:3, patient:4, structured:5, conversational:2 }
+    },
+    {
+      id: 'natali',
+      name: 'Natali Baratashvili',
+      role: 'French Language Teacher',
+      subject: 'french',
+      bio: 'Natali is passionate about French culture and authentic communication. Her immersive, conversational teaching style replicates real-life French interactions, helping students gain confidence and fluency quickly. From Parisian slang to classic literature, Natali makes French culture accessible and exciting.',
+      traits: ['Conversation', 'Culture', 'Fluency', 'Immersion'],
+      languages: ['Georgian', 'French', 'English', 'Russian'],
+      styles: ['Conversational', 'Cultural', 'Immersive'],
+      fbLink: 'https://www.facebook.com/share/185ffAZPgR/?mibextid=wwXIfr',
+      scores: { analytical:2, creative:5, patient:5, structured:2, conversational:5 }
+    }
+  ]
+};
+
+/* =============================================
+   QUIZ QUESTIONS
+============================================= */
+var QUESTIONS = {
+  math: [
+    {
+      text: 'When you encounter a difficult math problem, what is your instinct?',
+      options: [
+        { label: 'Analyze it step by step methodically', trait: 'analytical' },
+        { label: 'Draw or visualize it', trait: 'creative' },
+        { label: 'Ask for help and go slowly', trait: 'patient' },
+        { label: 'Follow a formula or structure', trait: 'structured' },
+        { label: 'Talk it through with someone', trait: 'conversational' }
+      ]
+    },
+    {
+      text: 'Which learning environment suits you best?',
+      options: [
+        { label: 'Quiet, focused solo study', trait: 'structured' },
+        { label: 'Hands-on experiments and examples', trait: 'creative' },
+        { label: 'Small group discussions', trait: 'conversational' },
+        { label: 'One-on-one tutoring at my own pace', trait: 'patient' },
+        { label: 'Competitive, fast-paced challenges', trait: 'analytical' }
+      ]
+    },
+    {
+      text: 'Which area of mathematics excites you most?',
+      options: [
+        { label: 'Algebra and equations', trait: 'analytical' },
+        { label: 'Geometry and shapes', trait: 'creative' },
+        { label: 'Statistics and real-world data', trait: 'conversational' },
+        { label: 'Calculus and rates of change', trait: 'structured' },
+        { label: 'Building solid foundations', trait: 'patient' }
+      ]
+    },
+    {
+      text: 'How do you prefer to be corrected when you make a mistake?',
+      options: [
+        { label: 'Direct and immediate feedback', trait: 'analytical' },
+        { label: 'Guided discovery — let me find the error', trait: 'creative' },
+        { label: 'Gently, with encouragement', trait: 'patient' },
+        { label: 'Systematic review of each step', trait: 'structured' },
+        { label: 'Through a conversation about the concept', trait: 'conversational' }
+      ]
+    },
+    {
+      text: 'How quickly do you usually grasp new concepts?',
+      options: [
+        { label: 'Very fast — I like to be challenged', trait: 'analytical' },
+        { label: 'At my own pace, no rush', trait: 'patient' },
+        { label: 'Faster when I see a diagram or model', trait: 'creative' },
+        { label: 'When I follow clear structured steps', trait: 'structured' },
+        { label: 'When it connects to everyday life', trait: 'conversational' }
+      ]
+    },
+    {
+      text: 'What is your main goal in studying mathematics?',
+      options: [
+        { label: 'Ace exams and competitions', trait: 'analytical' },
+        { label: 'Build a solid foundation', trait: 'patient' },
+        { label: 'Develop logical thinking skills', trait: 'structured' },
+        { label: 'Connect math to real life', trait: 'conversational' },
+        { label: 'Appreciate the beauty of numbers', trait: 'creative' }
+      ]
+    }
+  ],
+  french: [
+    {
+      text: 'What matters most to you in learning French?',
+      options: [
+        { label: 'Being able to hold a real conversation', trait: 'conversational' },
+        { label: 'Understanding grammar rules deeply', trait: 'analytical' },
+        { label: 'Reading French literature', trait: 'analytical' },
+        { label: 'Immersion in French culture', trait: 'creative' },
+        { label: 'Writing correctly and fluently', trait: 'structured' }
+      ]
+    },
+    {
+      text: 'How do you best retain new vocabulary?',
+      options: [
+        { label: 'Flashcards and repetition drills', trait: 'structured' },
+        { label: 'Using words in stories or context', trait: 'creative' },
+        { label: 'Hearing and repeating out loud', trait: 'conversational' },
+        { label: 'Grammar rules and word patterns', trait: 'analytical' },
+        { label: 'At a slow and steady pace', trait: 'patient' }
+      ]
+    },
+    {
+      text: 'Which French skill do you most want to improve?',
+      options: [
+        { label: 'Speaking confidently', trait: 'conversational' },
+        { label: 'Grammar accuracy', trait: 'analytical' },
+        { label: 'Listening comprehension', trait: 'conversational' },
+        { label: 'Essay writing', trait: 'structured' },
+        { label: 'Reading speed', trait: 'analytical' }
+      ]
+    },
+    {
+      text: 'How do you like your lessons to be structured?',
+      options: [
+        { label: 'Free-flowing and conversational', trait: 'conversational' },
+        { label: 'Strict grammar-first approach', trait: 'structured' },
+        { label: 'Creative exercises and role-play', trait: 'creative' },
+        { label: 'Gradual, zero pressure', trait: 'patient' },
+        { label: 'Intensive and fast-paced', trait: 'analytical' }
+      ]
+    },
+    {
+      text: 'What is your dream outcome with French?',
+      options: [
+        { label: 'Travel and speak with locals', trait: 'conversational' },
+        { label: 'Read Victor Hugo in the original', trait: 'analytical' },
+        { label: 'Pass a DELF or DALF exam', trait: 'structured' },
+        { label: 'Watch French films without subtitles', trait: 'creative' },
+        { label: 'Build basic everyday confidence', trait: 'patient' }
+      ]
+    },
+    {
+      text: 'How do you react when you make a grammar mistake?',
+      options: [
+        { label: 'I want it corrected immediately', trait: 'analytical' },
+        { label: 'I prefer to self-correct', trait: 'creative' },
+        { label: 'I learn better with encouragement', trait: 'patient' },
+        { label: 'I want a full explanation of the rule', trait: 'structured' },
+        { label: 'I move on and absorb it gradually', trait: 'conversational' }
+      ]
+    }
+  ]
+};
+
+/* =============================================
+   STATE
+============================================= */
+var state = {
+  subject: '',
+  questionIndex: 0,
+  answers: [],
+  selectedOption: null,
+  scoredTeachers: []
+};
+
+/* =============================================
+   HELPERS
+============================================= */
+function el(id) { return document.getElementById(id); }
+
+function initials(name) {
+  var parts = name.split(' ');
+  var result = '';
+  for (var i = 0; i < Math.min(parts.length, 2); i++) {
+    if (parts[i] && parts[i][0]) result += parts[i][0];
+  }
+  return result;
+}
+
+/* =============================================
+   PAGE NAV
+============================================= */
+function showPage(id) {
+  var all = document.querySelectorAll('.page');
+  for (var i = 0; i < all.length; i++) all[i].classList.remove('active');
+  var t = el(id);
+  if (t) t.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* =============================================
+   SUBJECT SELECT
+============================================= */
+function selectSubject(subj, card) {
+  state.subject = subj;
+  var cards = document.querySelectorAll('.subj-card');
+  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
+  if (card) card.classList.add('selected');
+  var btn = el('contBtn');
+  if (btn) btn.classList.add('ready');
+  var lbl = el('selLabel');
+  if (lbl) lbl.textContent = subj === 'math' ? 'Mathematics' : 'French Language';
+}
+
+function quickSelect(subj) {
+  state.subject = subj;
+  var cards = document.querySelectorAll('.subj-card');
+  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
+  var c = el('sc-' + subj);
+  if (c) c.classList.add('selected');
+  var btn = el('contBtn');
+  if (btn) btn.classList.add('ready');
+  var lbl = el('selLabel');
+  if (lbl) lbl.textContent = subj === 'math' ? 'Mathematics' : 'French Language';
+  showPage('subjects');
+}
+
+/* =============================================
+   QUIZ
+============================================= */
+function startQuiz() {
+  if (!state.subject) return;
+  state.questionIndex = 0;
+  state.answers = [];
+  state.selectedOption = null;
+  updateStepUI(2);
+  var badge = el('qBadge');
+  if (badge) badge.textContent = state.subject === 'math' ? 'Mathematics' : 'French Language';
+  showPage('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  var data = QUESTIONS[state.subject];
+  var q = data[state.questionIndex];
+  var total = data.length;
+  var num = state.questionIndex + 1;
+
+  if (el('qNum')) el('qNum').textContent = String(num);
+  if (el('qTotal')) el('qTotal').textContent = String(total);
+  if (el('qLabel')) el('qLabel').textContent = 'Question ' + (num < 10 ? '0' + num : num);
+  if (el('qText')) el('qText').textContent = q.text;
+  if (el('progressFill')) el('progressFill').style.width = (Math.round((state.questionIndex / total) * 100)) + '%';
+
+  state.selectedOption = state.answers[state.questionIndex] || null;
+  var letters = ['A','B','C','D','E'];
+  var wrap = el('optionsWrap');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+
+  for (var i = 0; i < q.options.length; i++) {
+    (function(idx, opt) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'opt-btn' + (state.selectedOption === opt.trait ? ' sel' : '');
+
+      var letter = document.createElement('span');
+      letter.className = 'opt-letter';
+      letter.textContent = letters[idx];
+
+      var txt = document.createElement('span');
+      txt.className = 'opt-text';
+      txt.textContent = opt.label;
+
+      btn.appendChild(letter);
+      btn.appendChild(txt);
+
+      btn.addEventListener('click', function() {
+        var all = wrap.querySelectorAll('.opt-btn');
+        for (var j = 0; j < all.length; j++) all[j].classList.remove('sel');
+        btn.classList.add('sel');
+        state.answers[state.questionIndex] = opt.trait;
+        state.selectedOption = opt.trait;
+        var nb = el('nextBtn');
+        if (nb) {
+          nb.classList.add('ready');
+          nb.textContent = state.questionIndex === data.length - 1 ? 'See My Match \u2192' : 'Next \u2192';
+        }
+      });
+      wrap.appendChild(btn);
+    })(i, q.options[i]);
+  }
+
+  var nb = el('nextBtn');
+  if (nb) {
+    nb.className = 'btn-next' + (state.selectedOption ? ' ready' : '');
+    nb.textContent = state.questionIndex === data.length - 1 ? 'See My Match \u2192' : 'Next \u2192';
+  }
+}
+
+function nextQuestion() {
+  if (!state.answers[state.questionIndex]) return;
+  var data = QUESTIONS[state.subject];
+  if (state.questionIndex < data.length - 1) {
+    state.questionIndex++;
+    renderQuestion();
+  } else {
+    computeResult();
+  }
+}
+
+function prevQuestion() {
+  if (state.questionIndex > 0) {
+    state.questionIndex--;
+    renderQuestion();
+  } else {
+    showPage('subjects');
+  }
+}
+
+/* =============================================
+   MATCHING
+============================================= */
+function computeResult() {
+  var pool = TEACHERS[state.subject];
+  var tc = { analytical:0, creative:0, patient:0, structured:0, conversational:0 };
+  var keys = Object.keys(tc);
+
+  for (var i = 0; i < state.answers.length; i++) {
+    var a = state.answers[i];
+    if (a && tc[a] !== undefined) tc[a]++;
+  }
+
+  var total = 0;
+  for (var k = 0; k < keys.length; k++) total += tc[keys[k]];
+  if (total === 0) total = 1;
+
+  var scored = pool.map(function(t) {
+    var score = 0;
+    for (var ki = 0; ki < keys.length; ki++) {
+      score += (tc[keys[ki]] / total) * t.scores[keys[ki]];
+    }
+    return { teacher: t, pct: Math.round((score / 5) * 100) };
+  });
+  scored.sort(function(a, b) { return b.pct - a.pct; });
+
+  state.scoredTeachers = scored;
+  renderResult(scored);
+  updateStepUI(3);
+  showPage('result');
+  // Save best match to Supabase (if user is logged in)
+  if (scored.length > 0 && typeof window.saveTeacherSelection === 'function') {
+    window.saveTeacherSelection(scored[0].teacher.id, state.subject, scored[0].pct);
+  }
+}
+
+/* =============================================
+   RESULT PAGE
+============================================= */
+function renderResult(scored) {
+  var best = scored[0];
+  var t = best.teacher;
+  var subLabel = state.subject === 'math' ? 'Mathematics' : 'French Language';
+  var ini = initials(t.name);
+
+  var rSub = el('resultSub');
+  if (rSub) rSub.textContent = 'Based on your ' + subLabel + ' assessment, here is your personalized teacher recommendation.';
+
+  var bestCard = el('bestCard');
+  if (bestCard) {
+    var traitsHTML = '';
+    for (var ti = 0; ti < t.traits.length; ti++) {
+      traitsHTML += '<span class="trait-tag">' + t.traits[ti] + '</span>';
+    }
+
+    bestCard.innerHTML = [
+      '<div class="best-wrap">',
+        '<div class="best-stripe"></div>',
+        '<div class="best-body">',
+          '<div class="best-top">',
+            '<div class="best-avatar">' + ini + '</div>',
+            '<div class="best-info">',
+              '<div class="best-badge">&#10022; Best Match</div>',
+              '<div class="best-name">' + t.name + '</div>',
+              '<div class="best-subj">' + subLabel + ' &middot; Expert Teacher</div>',
+            '</div>',
+          '</div>',
+          '<div class="best-grid">',
+            '<div>',
+              '<div class="best-sect-label">Teaching Strengths</div>',
+              '<div class="traits-wrap">' + traitsHTML + '</div>',
+            '</div>',
+            '<div>',
+              '<div class="best-sect-label">Teaching Style</div>',
+              '<div class="traits-wrap">' + t.styles.map(function(s) { return '<span class="trait-tag">' + s + '</span>'; }).join('') + '</div>',
+            '</div>',
+            '<div class="compat-sect">',
+              '<div class="compat-top">',
+                '<div class="best-sect-label" style="margin:0">Compatibility Score</div>',
+                '<div class="compat-pct">' + best.pct + '%</div>',
+              '</div>',
+              '<div class="compat-track"><div class="compat-fill" id="compatFill" style="width:0%"></div></div>',
+            '</div>',
+          '</div>',
+          '<button class="btn-profile" onclick="openModal(\'' + t.id + '\')">&#128196; View Full Profile &amp; Book Session</button>',
+        '</div>',
+      '</div>'
+    ].join('');
+
+    setTimeout(function() {
+      var fill = el('compatFill');
+      if (fill) fill.style.width = best.pct + '%';
+    }, 150);
+  }
+
+  var runnersWrap = el('runnersWrap');
+  if (runnersWrap) {
+    var html = '';
+    for (var ri = 1; ri < scored.length; ri++) {
+      var item = scored[ri];
+      var rt = item.teacher;
+      html += [
+        '<div class="runner-row" onclick="openModal(\'' + rt.id + '\')">',
+          '<div class="run-av">' + initials(rt.name) + '</div>',
+          '<div class="run-name">' + rt.name + '</div>',
+          '<div class="run-right">',
+            '<div class="run-bar-track"><div class="run-bar-fill" style="width:' + item.pct + '%"></div></div>',
+            '<div class="run-pct">' + item.pct + '%</div>',
+            '<div class="run-view">View Profile &rarr;</div>',
+          '</div>',
+        '</div>'
+      ].join('');
+    }
+    runnersWrap.innerHTML = html;
+  }
+}
+
+/* =============================================
+   MODAL — open / close
+============================================= */
+function openModal(teacherId) {
+  var teacher = null;
+  var allPools = [].concat(TEACHERS.math, TEACHERS.french);
+  for (var i = 0; i < allPools.length; i++) {
+    if (allPools[i].id === teacherId) { teacher = allPools[i]; break; }
+  }
+  if (!teacher) return;
+
+  var overlay = el('teacherModal');
+  if (!overlay) return;
+
+  var ini = initials(teacher.name);
+  var subLabel = teacher.subject === 'math' ? 'Mathematics' : 'French Language';
+  var logoSrc = teacher.subject === 'math' ? 'assets/logo-ema.jpg' : 'assets/logo-efla.jpg';
+  var mainLogoSrc = 'assets/logo-eea.jpg';
+
+  var langsHTML = teacher.languages.map(function(l) { return '<span class="modal-tag lang">' + l + '</span>'; }).join('');
+  var traitsHTML = teacher.traits.map(function(t) { return '<span class="modal-tag">' + t + '</span>'; }).join('');
+  var stylesHTML = teacher.styles.map(function(s) { return '<span class="modal-tag">' + s + '</span>'; }).join('');
+
+  var box = overlay.querySelector('.modal-box');
+  if (!box) return;
+
+  box.innerHTML = [
+    '<div class="modal-header">',
+      '<div class="modal-avatar">' + ini + '</div>',
+      '<div class="modal-header-info">',
+        '<div class="modal-subject-badge">' + subLabel + '</div>',
+        '<div class="modal-name">' + teacher.name + '</div>',
+        '<div class="modal-role">' + teacher.role + ' &middot; Elite Education Academy</div>',
+      '</div>',
+      '<button class="modal-close" onclick="closeModal()">&#10005;</button>',
+    '</div>',
+    '<div class="modal-body">',
+
+      '<div class="modal-sect">',
+        '<div class="modal-sect-title">About</div>',
+        '<p class="modal-bio">' + teacher.bio + '</p>',
+      '</div>',
+
+      '<div class="modal-sect">',
+        '<div class="modal-sect-title">Specializations</div>',
+        '<div class="modal-tags">' + traitsHTML + '</div>',
+      '</div>',
+
+      '<div class="modal-sect">',
+        '<div class="modal-sect-title">Teaching Style</div>',
+        '<div class="modal-tags">' + stylesHTML + '</div>',
+      '</div>',
+
+      '<div class="modal-sect">',
+        '<div class="modal-sect-title">Languages</div>',
+        '<div class="modal-tags">' + langsHTML + '</div>',
+      '</div>',
+
+      '<div class="modal-sect">',
+        '<div class="modal-sect-title">Academy Affiliations</div>',
+        '<div class="modal-logos">',
+          '<img src="' + mainLogoSrc + '" alt="EEA Logo" class="modal-logo" />',
+          '<img src="' + logoSrc + '" alt="Subject Academy Logo" class="modal-logo" />',
+        '</div>',
+      '</div>',
+
+      '<div class="booking-sect" id="bookingSect">',
+        '<div class="booking-title">Book a Session</div>',
+        '<p class="booking-sub">Fill in your details and preferred time. We will contact you within 24 hours to confirm your session with ' + teacher.name + '.</p>',
+
+        '<div class="booking-form" id="bookingForm">',
+          '<div class="form-row">',
+            '<div class="form-group">',
+              '<label class="form-label">Your Name</label>',
+              '<input type="text" class="form-input" id="bName" placeholder="Full name" />',
+            '</div>',
+            '<div class="form-group">',
+              '<label class="form-label">Phone / Email</label>',
+              '<input type="text" class="form-input" id="bContact" placeholder="How to reach you" />',
+            '</div>',
+          '</div>',
+          '<div class="form-row">',
+            '<div class="form-group">',
+              '<label class="form-label">Preferred Date</label>',
+              '<input type="date" class="form-input" id="bDate" />',
+            '</div>',
+            '<div class="form-group">',
+              '<label class="form-label">Preferred Time</label>',
+              '<select class="form-select" id="bTime">',
+                '<option value="">Select a time</option>',
+                '<option>09:00 - 10:00</option>',
+                '<option>10:00 - 11:00</option>',
+                '<option>11:00 - 12:00</option>',
+                '<option>12:00 - 13:00</option>',
+                '<option>14:00 - 15:00</option>',
+                '<option>15:00 - 16:00</option>',
+                '<option>16:00 - 17:00</option>',
+                '<option>17:00 - 18:00</option>',
+                '<option>18:00 - 19:00</option>',
+                '<option>19:00 - 20:00</option>',
+              '</select>',
+            '</div>',
+          '</div>',
+          '<div class="form-group">',
+            '<label class="form-label">Message (optional)</label>',
+            '<textarea class="form-textarea" id="bMessage" placeholder="Tell us about your goals or any specific topics you want to focus on..."></textarea>',
+          '</div>',
+          '<div class="booking-actions">',
+            '<button class="btn-book" onclick="requireAuthForBooking(\'' + teacher.name + '\', \'' + teacher.id + '\')">',
+              '&#128231; Send Booking Request',
+            '</button>',
+            '<div class="booking-divider"><span>or connect directly on Facebook</span></div>',
+            '<a class="btn-facebook" href="' + teacher.fbLink + '" target="_blank" rel="noopener">',
+              '<div class="fb-icon">f</div>',
+              'Message on Facebook',
+            '</a>',
+          '</div>',
+        '</div>',
+
+        '<div class="booking-success" id="bookingSuccess">',
+          '<div class="success-icon">&#10003;</div>',
+          '<div class="success-title">Request Sent!</div>',
+          '<div class="success-text">Your booking request has been sent to the academy. We will contact you within 24 hours to confirm your session with ' + teacher.name + '.</div>',
+        '</div>',
+
+      '</div>',
+
+    '</div>'
+  ].join('');
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  var minDate = new Date();
+  minDate.setDate(minDate.getDate() + 1);
+  var dateInput = el('bDate');
+  if (dateInput) dateInput.min = minDate.toISOString().split('T')[0];
+}
+
+function closeModal() {
+  var overlay = el('teacherModal');
+  if (overlay) overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* =============================================
+   BOOKING SUBMIT — mailto link
+============================================= */
+function submitBooking(teacherName, subject) {
+  var name = (el('bName') ? el('bName').value : '') || '';
+  var contact = (el('bContact') ? el('bContact').value : '') || '';
+  var date = (el('bDate') ? el('bDate').value : '') || '';
+  var time = (el('bTime') ? el('bTime').value : '') || '';
+  var message = (el('bMessage') ? el('bMessage').value : '') || '';
+
+  if (!name.trim()) { alert('Please enter your name.'); return; }
+  if (!contact.trim()) { alert('Please enter your phone or email.'); return; }
+  if (!date) { alert('Please select a preferred date.'); return; }
+  if (!time) { alert('Please select a preferred time.'); return; }
+
+  var subjectLine = encodeURIComponent('Booking Request — ' + teacherName + ' (' + (subject === 'math' ? 'Mathematics' : 'French Language') + ')');
+  var body = encodeURIComponent(
+    'Hello,\n\n' +
+    'A student has requested to book a session:\n\n' +
+    'Student Name: ' + name + '\n' +
+    'Contact: ' + contact + '\n' +
+    'Teacher: ' + teacherName + '\n' +
+    'Subject: ' + (subject === 'math' ? 'Mathematics' : 'French Language') + '\n' +
+    'Preferred Date: ' + date + '\n' +
+    'Preferred Time: ' + time + '\n' +
+    (message ? 'Message: ' + message + '\n' : '') +
+    '\nPlease confirm the session at your earliest convenience.\n\n' +
+    'Best regards,\nElite Education Academy Website'
+  );
+
+  window.location.href = 'mailto:vardo.contact@gmail.com?subject=' + subjectLine + '&body=' + body;
+
+  var form = el('bookingForm');
+  var success = el('bookingSuccess');
+  if (form) form.style.display = 'none';
+  if (success) success.classList.add('show');
+}
+
+/* =============================================
+   STEP INDICATOR
+============================================= */
+function updateStepUI(active) {
+  for (var i = 1; i <= 3; i++) {
+    var s = el('step' + i);
+    if (!s) continue;
+    s.classList.remove('active', 'done');
+    if (i < active) s.classList.add('done');
+    else if (i === active) s.classList.add('active');
+  }
+}
+
+/* =============================================
+   RESTART
+============================================= */
+function restart() {
+  state.subject = '';
+  state.answers = [];
+  state.questionIndex = 0;
+  state.selectedOption = null;
+  state.scoredTeachers = [];
+  var cards = document.querySelectorAll('.subj-card');
+  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
+  var btn = el('contBtn');
+  if (btn) btn.classList.remove('ready');
+  var lbl = el('selLabel');
+  if (lbl) lbl.textContent = '-- Select a subject above --';
+  updateStepUI(1);
+  showPage('hero');
+}
+
+/* =============================================
+   INIT
+============================================= */
+document.addEventListener('DOMContentLoaded', function() {
+  showPage('hero');
+
+  var overlay = el('teacherModal');
+  if (overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closeModal();
+    });
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+});
+</script>
+
+<!-- Supabase bridge — auth-aware nav & booking -->
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+// ⚠️  Replace with your Supabase project values
+const SUPABASE_URL = 'https://iuucpfxvsabenldczyaw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_kCS9u53wrcvAQKkrb7HQwQ_tnxitFqY';
+
+const supa = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ▶ Platform button: logged-in → dashboard, else → login
+window.goPlatform = async function() {
+  const { data: { session } } = await supa.auth.getSession();
+  if (session) {
+    window.location.href = 'pages/dashboard.html';
+  } else {
+    sessionStorage.setItem('auth_intent', 'platform'); // tells login.html to redirect after auth
+    window.location.href = 'pages/login.html';
+  }
+};
+
+// Go to login/signup page with mode pre-selected
+// fromNavbar=true means: if already logged in, go to dashboard instead
+window.goToLogin = async function(mode) {
+  const { data: { session } } = await supa.auth.getSession();
+  if (session && mode === 'platform') {
+    window.location.href = 'pages/dashboard.html';
+    return;
+  }
+  sessionStorage.setItem('auth_mode', mode || 'login');
+  window.location.href = 'pages/login.html';
+};
+
+// Update navbar based on auth state: logged-in → show Platform, logged-out → show Sign In/Up
+async function updateNavbar() {
+  const { data: { session } } = await supa.auth.getSession();
+  const signinBtn  = document.getElementById('nav-signin-btn');
+  const signupBtn  = document.getElementById('nav-signup-btn');
+  const platformBtn = document.getElementById('nav-platform-btn');
+  if (session) {
+    // Logged in: hide sign in/up, show Platform
+    if (signinBtn)  signinBtn.style.display  = 'none';
+    if (signupBtn)  signupBtn.style.display  = 'none';
+    if (platformBtn) platformBtn.style.display = '';
+    // Also hide result-page auth bar
+    const authBar = document.getElementById('result-auth-bar');
+    if (authBar) authBar.style.display = 'none';
+  } else {
+    // Logged out: show sign in/up, hide Platform
+    if (signinBtn)  signinBtn.style.display  = '';
+    if (signupBtn)  signupBtn.style.display  = '';
+    if (platformBtn) platformBtn.style.display = 'none';
+  }
+}
+// Run on page load
+updateNavbar();
+
+// Book Session → require auth then open booking modal on dashboard
+window.requireAuthForBooking = async function(teacherName, teacherId) {
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) {
+    // Save teacher intent for after login
+    sessionStorage.setItem('pending_teacher', JSON.stringify({ teacherName, teacherId }));
+    sessionStorage.setItem('auth_mode', 'signup'); // suggest signup for new users
+    window.location.href = 'pages/login.html';
+    return;
+  }
+  // Already logged in → go to dashboard (checkPendingTeacher will open booking modal)
+  sessionStorage.setItem('pending_teacher', JSON.stringify({ teacherName, teacherId }));
+  window.location.href = 'pages/dashboard.html';
+};
+
+// Save teacher selection after quiz (if logged in)
+window.saveTeacherSelection = async function(teacherId, subject, pct) {
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) return;
+  await supa.from('teacher_selections').upsert({
+    user_id: session.user.id,
+    teacher_id: teacherId,
+    subject,
+    compatibility_pct: pct,
+  });
+};
+</script>
+
+</body>
+</html>

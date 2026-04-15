@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Platform · Elite Education Academy</title>
+  <link rel="icon" type="image/jpeg" href="../assets/logo-eea.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/platform.css" />
+</head>
+<body>
+
+<!-- ══════════════════════ SIDEBAR ══════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <img src="../assets/logo-eea.jpg" alt="EEA" class="sidebar-logo" />
+    <div class="sidebar-brand-text">
+      <span class="sidebar-brand-name">Elite Education</span>
+      <span class="sidebar-brand-sub">Academy</span>
+    </div>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="sidebar-avatar" id="sidebar-avatar">AB</div>
+    <div class="sidebar-user-info">
+      <div class="sidebar-user-name" id="sidebar-name">Loading...</div>
+      <div class="sidebar-user-role" id="sidebar-role">Student</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+
+  <div class="sidebar-footer">
+    <button class="btn-logout" onclick="signOut()">⬅ Sign Out</button>
+  </div>
+</aside>
+
+<!-- ══════════════════════ MAIN ══════════════════════ -->
+<div class="main-content">
+  <div class="topbar">
+    <button class="hamburger" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="topbar-title" id="topbar-title">Dashboard</div>
+    <div class="topbar-actions">
+      <span class="topbar-date" id="topbar-date"></span>
+    </div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- ═══════ STUDENT PANELS ═══════ -->
+
+    <!-- S: Dashboard -->
+    <div class="panel active" id="panel-s-home">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-card-label">Lessons Completed</div><div class="stat-card-value">24</div><div class="stat-card-sub">This month: 8</div></div>
+        <div class="stat-card"><div class="stat-card-label">Remaining</div><div class="stat-card-value" id="stats-remaining">8</div><div class="stat-card-sub">Renews in 12 days</div></div>
+        <div class="stat-card"><div class="stat-card-label">Homework Done</div><div class="stat-card-value">18</div><div class="stat-card-sub">2 pending</div></div>
+        <div class="stat-card"><div class="stat-card-label">My Teacher</div><div class="stat-card-value" style="font-size:1.1rem;margin-top:0.4rem">Luka V.</div><div class="stat-card-sub">Mathematics</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Upcoming Lessons</div><span class="badge badge-green">● Active</span></div>
+          <div class="card-body" id="upcoming-sessions">
+            <div class="sched-item">
+              <div class="sched-date"><div class="sched-day">Mon</div><div class="sched-num">14</div></div>
+              <div class="sched-sep"></div>
+              <div class="sched-info"><div class="sched-subject">Mathematics — Algebra</div><div class="sched-time">17:00–18:00 · Luka Vardosanidze</div><div class="sched-agreed">✓ Confirmed</div></div>
+              <button class="btn-sm btn-primary-sm" onclick="switchPanel('s-lesson')">Join →</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Homework <span class="notif-dot"></span></div></div>
+          <div class="card-body">
+            <div class="lesson-item"><div class="lesson-avatar">HW</div><div class="lesson-info"><div class="lesson-name">Quadratic Equations — 5 problems</div><div class="lesson-meta">Luka · Due: Mon Apr 14</div></div><span class="badge badge-gold">Pending</span></div>
+            <div class="lesson-item"><div class="lesson-avatar">HW</div><div class="lesson-info"><div class="lesson-name">Derivatives</div><div class="lesson-meta">Luka · Due: Fri Apr 11</div></div><span class="badge badge-red">Late</span></div>
+            <div class="lesson-item"><div class="lesson-avatar">HW</div><div class="lesson-info"><div class="lesson-name">Geometry proofs</div><div class="lesson-meta">Luka · Completed</div></div><span class="badge badge-green">Done</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- Past Recordings -->
+      <div class="card" style="margin-top:1.5rem">
+        <div class="card-header"><div class="card-title">Past Recordings</div></div>
+        <div class="card-body" id="s-recordings-list">
+          <div class="recording-item"><div class="rec-icon">▶</div><div class="rec-info"><div class="rec-title">Algebra — Quadratic Functions</div><div class="rec-meta">Mon Apr 7 · 58 min</div></div><button class="btn-sm btn-ghost-sm">Watch</button></div>
+          <div class="recording-item"><div class="rec-icon">▶</div><div class="rec-info"><div class="rec-title">Calculus — Limits</div><div class="rec-meta">Wed Apr 5 · 62 min</div></div><button class="btn-sm btn-ghost-sm">Watch</button></div>
+        </div>
+      </div>
+    </div><!-- /s-home -->
+
+    <!-- S: Chat -->
+    <div class="panel" id="panel-s-chat" style="height:calc(100vh - 120px);display:none;flex-direction:column">
+      <div class="card" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+        <div class="channel-header">
+          <div class="channel-avatar">LV</div>
+          <div><div class="channel-name">Luka Vardosanidze</div><div class="channel-status">● Online · Teacher</div></div>
+        </div>
+        <div class="channel-body" id="channel-body">
+          <div class="channel-sys">Conversation · 2026</div>
+        </div>
+        <div class="channel-input-area">
+          <div class="channel-quick">
+            <button class="channel-quick-btn" onclick="quickMsg('s','Confirmed! ✓')">✓ Confirmed</button>
+            <button class="channel-quick-btn" onclick="quickMsg('s','I cannot make that time, can we reschedule?')">⏰ Other time?</button>
+            <button class="channel-quick-btn" onclick="quickMsg('s','Thank you! 🙏')">🙏 Thank you</button>
+          </div>
+          <div class="channel-input-row" style="margin-top:0.6rem">
+            <textarea class="channel-input" id="s-channel-input" placeholder="Message..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg('s')}"></textarea>
+            <button class="btn-channel-send" onclick="sendChatMsg('s')">➤</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- /s-chat -->
+
+    <!-- S: Recordings panel -->
+    <div class="panel" id="panel-s-recordings">
+      <div class="card">
+        <div class="card-header"><div class="card-title">All Recordings</div></div>
+        <div class="card-body" id="s-recordings-all">
+          <div class="recording-item"><div class="rec-icon">▶</div><div class="rec-info"><div class="rec-title">Algebra — Quadratic Functions</div><div class="rec-meta">Mon Apr 7 · 58 min</div></div><button class="btn-sm btn-ghost-sm">Watch</button></div>
+          <div class="recording-item"><div class="rec-icon">▶</div><div class="rec-info"><div class="rec-title">Calculus — Limits</div><div class="rec-meta">Wed Apr 5 · 62 min</div></div><button class="btn-sm btn-ghost-sm">Watch</button></div>
+          <div class="recording-item"><div class="rec-icon">▶</div><div class="rec-info"><div class="rec-title">Geometry — Vectors</div><div class="rec-meta">Mon Mar 31 · 55 min</div></div><button class="btn-sm btn-ghost-sm">Watch</button></div>
+        </div>
+      </div>
+    </div><!-- /s-recordings -->
+
+    <!-- S: Profile settings -->
+    <div class="panel" id="panel-s-profile" >
+      <div class="card" style="max-width:520px">
+        <div class="card-header"><div class="card-title">Profile & Settings</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:1rem">
+          <div class="form-group2"><label class="form-label2">Full Name</label><input class="form-input2" id="prof-name" type="text" /></div>
+          <div class="form-group2"><label class="form-label2">Email</label><input class="form-input2" id="prof-email" type="email" disabled style="opacity:0.6" /></div>
+          <button class="btn-modal-primary" onclick="saveProfile()">✓ Save</button>
+          <hr style="border:none;border-top:1px solid var(--border);margin:0.5rem 0" />
+          <div class="form-group2"><label class="form-label2">New Password</label><input class="form-input2" id="prof-new-pass" type="password" placeholder="••••••••" /></div>
+          <button class="btn-modal-primary" onclick="changePassword()" style="background:var(--rust)">🔒 Change Password</button>
+        </div>
+      </div>
+    </div><!-- /s-profile -->
+
+    <!-- S: Live Lesson -->
+    <div class="panel" id="panel-s-lesson" style="padding:0;display:none">
+      <div class="lesson-room">
+        <div class="whiteboard-area">
+          <div class="wb-toolbar">
+            <span class="wb-title">📡 Lesson · Algebra · <span id="wb-timer-s">00:00</span></span>
+            <button class="wb-tool active" id="wbToolPenS" onclick="setWbTool('pen')" title="Pen">✏️</button>
+            <button class="wb-tool" id="wbToolEraserS" onclick="setWbTool('eraser')" title="Eraser">⬜</button>
+            <div class="wb-sep"></div>
+            <div class="wb-color active" style="background:#fff" onclick="setWbColor('#fff',this)"></div>
+            <div class="wb-color" style="background:#f0bc6e" onclick="setWbColor('#f0bc6e',this)"></div>
+            <div class="wb-color" style="background:#6be0f0" onclick="setWbColor('#6be0f0',this)"></div>
+            <div class="wb-color" style="background:#f06b6b" onclick="setWbColor('#f06b6b',this)"></div>
+            <div class="wb-sep"></div>
+            <button class="wb-tool" onclick="clearWb()">🗑</button>
+          </div>
+          <div class="wb-canvas-wrap"><canvas id="wb-canvas-s"></canvas></div>
+          <div class="wb-footer">
+            <span class="wb-status">Whiteboard auto-saves</span>
+            <button class="btn-wb-save" onclick="saveWb()">💾 Save</button>
+            <button class="btn-wb-end" onclick="endLesson('s')">■ End Lesson</button>
+          </div>
+        </div>
+        <div class="lesson-sidebar">
+          <div class="ls-tabs">
+            <div class="ls-tab active" onclick="switchLsTab(this,'ls-chat-s')">Chat</div>
+            <div class="ls-tab" onclick="switchLsTab(this,'ls-hw-s')">Homework</div>
+          </div>
+          <div class="ls-panel active" id="ls-chat-s">
+            <div class="chat-messages" id="chat-messages-s">
+              <div class="chat-system">Lesson started</div>
+            </div>
+            <div class="chat-input-row">
+              <input class="chat-input" id="chat-input-s" placeholder="Message teacher..." onkeydown="if(event.key==='Enter')sendLessonChat('s')" />
+              <button class="btn-send" onclick="sendLessonChat('s')">➤</button>
+            </div>
+          </div>
+          <div class="ls-panel" id="ls-hw-s">
+            <div class="ai-section"><div class="ai-section-label">Your Homework</div>
+              <div class="hw-item"><div class="hw-item-q">1. x² + 5x + 6 = 0</div><span class="hw-item-diff diff-easy">easy</span></div>
+              <div class="hw-item"><div class="hw-item-q">2. 2x² – 3x – 2 = 0</div><span class="hw-item-diff diff-med">medium</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /s-lesson -->
+
+    <!-- ═══════ TEACHER PANELS ═══════ -->
+
+    <!-- T: Dashboard -->
+    <div class="panel" id="panel-t-home" style="display:none">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-card-label">Today's Lessons</div><div class="stat-card-value">3</div><div class="stat-card-sub">Next: 15:00 with Ana</div></div>
+        <div class="stat-card"><div class="stat-card-label">Active Students</div><div class="stat-card-value">12</div><div class="stat-card-sub">2 need renewal</div></div>
+        <div class="stat-card"><div class="stat-card-label">Lessons This Month</div><div class="stat-card-value">28</div><div class="stat-card-sub">+4 from last month</div></div>
+        <div class="stat-card"><div class="stat-card-label">Pending</div><div class="stat-card-value">5</div><div class="stat-card-sub">Homework to set</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">My Students</div><button class="btn-sm btn-primary-sm" onclick="switchPanel('t-students')">+ View All</button></div>
+          <div class="card-body" id="t-students-list">
+            <div style="color:var(--text3);font-size:0.82rem;padding:0.5rem 0">Loading students...</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Schedule Lesson</div></div>
+          <div class="card-body">
+            <div class="form-group2"><label class="form-label2">Student</label><select class="form-input2" id="sched-student"><option value="">Loading...</option></select></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+              <div class="form-group2"><label class="form-label2">Date</label><input type="date" class="form-input2" id="sched-date" /></div>
+              <div class="form-group2"><label class="form-label2">Time</label><select class="form-input2" id="sched-time"><option>09:00</option><option>10:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option selected>17:00</option><option>18:00</option><option>19:00</option></select></div>
+            </div>
+            <div class="form-group2"><label class="form-label2">Topic</label><input type="text" class="form-input2" id="sched-topic" placeholder="e.g. Quadratic Equations" /></div>
+            <button class="btn-modal-primary" onclick="scheduleLesson()" style="width:100%;margin-top:0.25rem">Send via Chat →</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- /t-home -->
+
+    <!-- T: Chat -->
+    <div class="panel" id="panel-t-chat" style="height:calc(100vh - 120px);display:none;flex-direction:column">
+      <div class="card" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+        <div class="channel-header">
+          <div style="display:flex;gap:0.5rem;margin-right:auto">
+            <div class="channel-avatar" style="cursor:pointer;font-size:0.7rem" onclick="setActivePeer(null,'Ana Beridze');switchPanel('t-chat')">AB</div>
+            <div class="channel-avatar" style="cursor:pointer;font-size:0.7rem;background:linear-gradient(135deg,#eaf0f6,#c0d8b0)" onclick="setActivePeer(null,'Giorgi Mchedlishvili');switchPanel('t-chat')">GM</div>
+          </div>
+          <div style="text-align:right"><div class="channel-name" id="t-channel-name">Ana Beridze</div><div class="channel-status">● Online · Student</div></div>
+        </div>
+        <div class="channel-body" id="channel-body-t">
+          <div class="channel-sys">Conversation · 2026</div>
+        </div>
+        <div class="channel-input-area">
+          <div class="channel-quick">
+            <button class="channel-quick-btn" onclick="quickMsg('t','Tomorrow Lesson at usual time.')">📅 Tomorrow Lesson</button>
+            <button class="channel-quick-btn" onclick="quickMsg('t','Please complete your homework.')">📝 Homework reminder</button>
+          </div>
+          <div class="channel-input-row" style="margin-top:0.6rem">
+            <textarea class="channel-input" id="t-channel-input" placeholder="Message..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg('t')}"></textarea>
+            <button class="btn-channel-send" onclick="sendChatMsg('t')">➤</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- /t-chat -->
+
+    <!-- T: Recordings -->
+    <div class="panel" id="panel-t-recordings" style="display:none">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Past Recordings</div></div>
+        <div class="card-body">
+          <div class="recording-item"><div class="rec-icon">▶</div><div class="rec-info"><div class="rec-title">Ana Beridze · Algebra</div><div class="rec-meta">Mon Apr 7 · 58 min</div></div><button class="btn-sm btn-ghost-sm">Watch</button></div>
+          <div class="recording-item"><div class="rec-icon">▶</div><div class="rec-info"><div class="rec-title">Giorgi · Calculus</div><div class="rec-meta">Wed Apr 5 · 62 min</div></div><button class="btn-sm btn-ghost-sm">Watch</button></div>
+        </div>
+      </div>
+    </div><!-- /t-recordings -->
+
+    <!-- T: Students list -->
+    <div class="panel" id="panel-t-students" style="display:none">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Student List</div><button class="btn-sm btn-primary-sm" onclick="openModal('add-student-modal')">+ Add</button></div>
+        <div class="card-body" id="t-students-full">
+          <div class="lesson-item"><div class="lesson-avatar">AB</div><div class="lesson-info"><div class="lesson-name">Ana Beridze</div><div class="lesson-meta">32 lessons · 24 used · 8 remaining · <span style="color:var(--green)">Active</span></div></div><span class="badge badge-green">Active</span></div>
+          <div class="lesson-item"><div class="lesson-avatar">GM</div><div class="lesson-info"><div class="lesson-name">Giorgi Mchedlishvili</div><div class="lesson-meta">16 lessons · 16 used · 0 remaining · <span style="color:var(--red)">Expired</span></div></div><span class="badge badge-red">Expired</span></div>
+        </div>
+      </div>
+    </div><!-- /t-students -->
+
+    <!-- T: Profile -->
+    <div class="panel" id="panel-t-profile" style="display:none" >
+      <div class="card" style="max-width:520px">
+        <div class="card-header"><div class="card-title">Profile & Settings</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:1rem">
+          <div class="form-group2"><label class="form-label2">Full Name</label><input class="form-input2" id="prof-name" type="text" /></div>
+          <div class="form-group2"><label class="form-label2">Email</label><input class="form-input2" id="prof-email" type="email" disabled style="opacity:0.6" /></div>
+          <button class="btn-modal-primary" onclick="saveProfile()">✓ Save</button>
+          <hr style="border:none;border-top:1px solid var(--border);margin:0.5rem 0" />
+          <div class="form-group2"><label class="form-label2">New Password</label><input class="form-input2" id="prof-new-pass" type="password" placeholder="••••••••" /></div>
+          <button class="btn-modal-primary" onclick="changePassword()" style="background:var(--rust)">🔒 Change Password</button>
+        </div>
+      </div>
+    </div><!-- /t-profile -->
+
+    <!-- T: Lesson room -->
+    <div class="panel" id="panel-t-lesson" style="padding:0;display:none">
+      <div class="lesson-room">
+        <div class="whiteboard-area">
+          <div class="wb-toolbar">
+            <span class="wb-title">📡 Teaching: <span id="wb-student-name">Student</span> · <span id="wb-timer-t">00:00</span></span>
+            <button class="wb-tool active" onclick="setWbTool('pen')">✏️</button>
+            <button class="wb-tool" onclick="setWbTool('eraser')">⬜</button>
+            <div class="wb-sep"></div>
+            <div class="wb-color active" style="background:#fff" onclick="setWbColor('#fff',this)"></div>
+            <div class="wb-color" style="background:#f0bc6e" onclick="setWbColor('#f0bc6e',this)"></div>
+            <div class="wb-color" style="background:#6be0f0" onclick="setWbColor('#6be0f0',this)"></div>
+            <div class="wb-color" style="background:#f06b6b" onclick="setWbColor('#f06b6b',this)"></div>
+            <div class="wb-color" style="background:#90ee90" onclick="setWbColor('#90ee90',this)"></div>
+            <div class="wb-sep"></div>
+            <button class="wb-tool" onclick="clearWb()">🗑</button>
+          </div>
+          <div class="wb-canvas-wrap"><canvas id="wb-canvas-t"></canvas></div>
+          <div class="wb-footer">
+            <span class="wb-status">Auto-saves</span>
+            <button class="btn-wb-save" onclick="saveWb()">💾 Save</button>
+            <button class="btn-wb-end" onclick="endLesson('t')">■ End Lesson</button>
+          </div>
+        </div>
+        <div class="lesson-sidebar">
+          <div class="ls-tabs">
+            <div class="ls-tab active" onclick="switchLsTab(this,'ls-chat-t')">Chat</div>
+            <div class="ls-tab" onclick="switchLsTab(this,'ls-ai-t')">AI Homework</div>
+          </div>
+          <div class="ls-panel active" id="ls-chat-t">
+            <div class="chat-messages" id="chat-messages-t"><div class="chat-system">Lesson started</div></div>
+            <div class="chat-input-row">
+              <input class="chat-input" id="chat-input-t" placeholder="Message student..." onkeydown="if(event.key==='Enter')sendLessonChat('t')" />
+              <button class="btn-send" onclick="sendLessonChat('t')">➤</button>
+            </div>
+          </div>
+          <div class="ls-panel" id="ls-ai-t">
+            <div class="ai-section">
+              <div class="ai-section-label">Lesson Topic</div>
+              <textarea class="ai-topic-input" id="ai-topic" placeholder="e.g. Quadratic equations, algebra, calculus..."></textarea>
+              <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
+                <select class="form-input2" id="aiDifficulty" style="font-size:0.72rem;padding:0.45rem">
+                  <option value="mixed">Mixed</option>
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+                <select class="form-input2" id="aiCount" style="font-size:0.72rem;padding:0.45rem">
+                  <option value="3">3 problems</option>
+                  <option value="5" selected>5 problems</option>
+                  <option value="8">8 problems</option>
+                </select>
+              </div>
+              <button class="btn-ai-generate" id="btn-ai-gen" onclick="generateHomework()">✨ Generate AI Homework</button>
+              <div id="ai-provider-status" style="font-size:0.65rem;color:var(--text3);margin-top:0.35rem;text-align:center"></div>
+            </div>
+            <div id="ai-result"></div>
+            <div style="margin-top:0.7rem;padding:0.65rem 0.8rem;background:rgba(16,71,106,0.05);border:1px dashed var(--border2);border-radius:6px;font-size:0.67rem;color:var(--text3);line-height:1.65">
+              <strong style="color:var(--navy);display:block;margin-bottom:0.25rem">🔑 Free AI (Groq / Hugging Face)</strong>
+              1. <a href="https://console.groq.com" target="_blank" style="color:var(--navy);font-weight:600">console.groq.com</a> → API Keys → copy<br>
+              2. <code style="background:rgba(0,0,0,0.06);padding:1px 4px;border-radius:3px">js/platform.js</code> → <code style="background:rgba(0,0,0,0.06);padding:1px 4px;border-radius:3px">YOUR_GROQ_API_KEY</code> → paste<br>
+              or HF: <a href="https://huggingface.co/settings/tokens" target="_blank" style="color:var(--navy)">huggingface.co/settings/tokens</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /t-lesson -->
+
+  </div><!-- /content-area -->
+</div><!-- /main-content -->
+
+<!-- ══════════════════ BOOK SESSION MODAL ══════════════════ -->
+<div class="modal-overlay" id="book-modal">
+  <div class="modal-box2">
+    <div class="modal2-header"><div class="modal2-title">📅 Book a Session</div><button class="modal2-close" onclick="closeModal('book-modal')">✕</button></div>
+    <div class="modal2-body">
+      <input type="hidden" id="b-teacher-id" />
+      <div class="form-group2"><label class="form-label2">Teacher</label><input class="form-input2" id="b-teacher-name" readonly /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+        <div class="form-group2"><label class="form-label2">Date</label><input type="date" class="form-input2" id="b-date" /></div>
+        <div class="form-group2"><label class="form-label2">Time</label><select class="form-input2" id="b-time"><option>09:00</option><option>10:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option></select></div>
+      </div>
+      <div class="form-group2"><label class="form-label2">Topic</label><input type="text" class="form-input2" id="b-topic" placeholder="e.g. Algebra" /></div>
+      <button class="btn-modal-primary" onclick="submitBooking()" style="width:100%">✓ Confirm Booking</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ ADD STUDENT MODAL ══════════════════ -->
+<div class="modal-overlay" id="add-student-modal">
+  <div class="modal-box2">
+    <div class="modal2-header"><div class="modal2-title">+ Add Student</div><button class="modal2-close" onclick="closeModal('add-student-modal')">✕</button></div>
+    <div class="modal2-body">
+      <div class="form-group2"><label class="form-label2">Full Name</label><input class="form-input2" id="new-student-name" placeholder="Full Name Surname" /></div>
+      <div class="form-group2"><label class="form-label2">Email</label><input class="form-input2" id="new-student-email" type="email" placeholder="student@email.com" /></div>
+      <div class="form-group2"><label class="form-label2">Subject</label><select class="form-input2" id="new-student-subject"><option value="math">Mathematics</option><option value="french">French</option></select></div>
+      <div class="form-group2"><label class="form-label2">Lesson Package</label><select class="form-input2" id="new-student-lessons"><option value="8">8 lessons</option><option value="16">16 lessons</option><option value="32">32 lessons</option></select></div>
+      <button class="btn-modal-primary" onclick="addStudent()" style="width:100%">✓ Invite Student</button>
+    </div>
+  </div>
+</div>
+
+<div id="toaster"></div>
+
+<script>
+function sendLessonChat(role) {
+  const input = document.getElementById('chat-input-' + role);
+  const cont  = document.getElementById('chat-messages-' + role);
+  if (!input || !cont || !input.value.trim()) return;
+  const msg = input.value.trim(); input.value = '';
+  const div = document.createElement('div');
+  div.className = 'chat-msg own';
+  div.innerHTML = `<div class="chat-av">${role==='t'?'T':'S'}</div><div><div class="chat-bubble">${msg}</div><div class="chat-time">Now</div></div>`;
+  cont.appendChild(div); cont.scrollTop = cont.scrollHeight;
+}
+function switchLsTab(tab, panelId) {
+  tab.parentElement.querySelectorAll('.ls-tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  tab.parentElement.parentElement.querySelectorAll('.ls-panel').forEach(p=>p.classList.remove('active'));
+  const t=document.getElementById(panelId); if(t)t.classList.add('active');
+}
+</script>
+
+<script>
+function toggleSidebar() {
+  const s=document.getElementById('sidebar'), o=document.getElementById('sidebar-overlay');
+  const open = s.classList.toggle('sidebar-open');
+  o.style.display = open ? 'block' : 'none';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('sidebar-open');
+  document.getElementById('sidebar-overlay').style.display='none';
+}
+// Close sidebar on panel switch on mobile
+const origSwitch = window.switchPanel;
+window.addEventListener('load', () => {
+  if (window.switchPanel) {
+    const orig = window.switchPanel;
+    window.switchPanel = function(id) { orig(id); if(window.innerWidth<900) closeSidebar(); };
+  }
+});
+</script>
+<script type="module" src="../js/platform.js"></script>
+</body>
+</html>
