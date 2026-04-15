@@ -58,6 +58,79 @@ q('auth-form').addEventListener('submit', async e => {
 
   // ── TEACHER SIGNUP / LOGIN ──
   if (mode === 'teacher') {
+    const TEACHER_CODE = 'EEA2026';
+    if (code !== TEACHER_CODE) {
+      toast('Invalid teacher access code', 'warning');
+      btn.disabled = false; btn.textContent = 'Sign In / Register →';
+      return;
+    }
+    // Try login first
+    const { data: loginData, error: loginErr } = await supabase.auth.signInWithPassword({ email, password: pass });
+    if (!loginErr && loginData.user) {
+      // Force role to teacher
+      await supabase.from('profiles').upsert({
+        id: loginData.user.id,
+        role: 'teacher',
+        full_name: name || loginData.user.user_metadata?.full_name || loginData.user.email,
+        email: loginData.user.email,
+      });
+      window.location.href = 'dashboard.html';
+      return;
+    }
+    // Signup as teacher — store role in metadata so trigger picks it up
+    const { data, error } = await supabase.auth.signUp({
+      email, password: pass,
+      options: { data: { full_name: name, role: 'teacher' } }
+    });
+    if (error) { toast(error.message, 'warning'); btn.disabled = false; btn.textContent = 'Sign In / Register →'; return; }
+    if (data.user) {
+      // Upsert immediately (works if email confirmation disabled)
+      await supabase.from('profiles').upsert({
+        id: data.user.id, full_name: name, role: 'teacher', email,
+      });
+      toast('✅ Teacher account created!', 'success');
+    }
+    if (data.session) {
+      window.location.href = 'dashboard.html';
+    } else {
+      toast('Check your email to confirm your account, then sign in as Teacher.', '');
+      btn.disabled = false; btn.textContent = 'Sign In / Register →';
+    }
+    return;
+  }
+
+  // ── STUDENT SIGNUP ──
+  const { data, error } = await supabase.auth.signUp({
+    email, password: pass,
+    options: { data: { full_name: name, role: 'student' } }
+  });
+  if (error) { toast(error.message, 'warning'); btn.disabled = false; btn.textContent = 'Sign Up →'; return; }
+  if (data.user) {
+    await supabase.from('profiles').upsert({ id: data.user.id, full_name: name, role: 'student', email });
+    toast('✅ Account created!', 'success');
+  }
+  if (data.session) {
+    window.location.href = 'dashboard.html';
+  } else {
+    toast('Check your email to confirm your account, then sign in.', '');
+    btn.disabled = false; btn.textContent = 'Sign Up →';
+  }
+});
+  const btn   = q('btn-submit');
+
+  btn.disabled    = true;
+  btn.textContent = '...';
+
+  // ── LOGIN ──
+  if (mode === 'login') {
+    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+    if (error) { toast(error.message, 'warning'); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
+    window.location.href = 'dashboard.html';
+    return;
+  }
+
+  // ── TEACHER SIGNUP / LOGIN ──
+  if (mode === 'teacher') {
     // Secret invite code check (set your own code in Supabase or hardcode)
     const TEACHER_CODE = 'EEA2026'; // admin changes this
     if (code !== TEACHER_CODE) {
@@ -106,15 +179,23 @@ window.signInWithGoogle = async function() {
 // ── OAuth callback ────────────────────────────────────────────
 supabase.auth.onAuthStateChange(async (event, session) => {
   if (event === 'SIGNED_IN' && session) {
-    const { data: existing } = await supabase.from('profiles').select('id').eq('id', session.user.id).single();
+    const { data: existing } = await supabase
+      .from('profiles').select('id, role').eq('id', session.user.id).single();
+
     if (!existing) {
+      // New user — use role from metadata (set during signup)
+      const role = session.user.user_metadata?.role || 'student';
       await supabase.from('profiles').insert({
-        id: session.user.id,
+        id:        session.user.id,
         full_name: session.user.user_metadata?.full_name || session.user.email,
-        role: 'student',
-        email: session.user.email,
+        role:      role,
+        email:     session.user.email,
       });
+    } else if (existing.role !== 'teacher' && session.user.user_metadata?.role === 'teacher') {
+      // Fix role if metadata says teacher but profile says student
+      await supabase.from('profiles').update({ role: 'teacher' }).eq('id', session.user.id);
     }
+
     if (window.location.pathname.includes('login.html')) {
       window.location.href = 'dashboard.html';
     }
