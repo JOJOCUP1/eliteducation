@@ -73,7 +73,7 @@ function renderMessage(msg) {
   } else {
     name = '...'; // fallback while loading
   }
-  const time = new Date(msg.created_at).toLocaleTimeString('ka-GE', { hour: '2-digit', minute: '2-digit' });
+  const time = new Date(msg.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   const ini  = name.split(' ').map(w => w[0] || '').join('').slice(0, 2).toUpperCase();
 
   const div = document.createElement('div');

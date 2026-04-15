@@ -179,11 +179,12 @@
               <button class="btn-send" onclick="sendLessonChat('s')">➤</button>
             </div>
           </div>
-          <div class="ls-panel" id="ls-hw-s">
-            <div class="ai-section"><div class="ai-section-label">Your Homework</div>
-              <div class="hw-item"><div class="hw-item-q">1. x² + 5x + 6 = 0</div><span class="hw-item-diff diff-easy">easy</span></div>
-              <div class="hw-item"><div class="hw-item-q">2. 2x² – 3x – 2 = 0</div><span class="hw-item-diff diff-med">medium</span></div>
+          <div class="ls-panel" id="ls-hw-s" style="overflow-y:auto;padding:0.75rem">
+            <div class="ai-section-label" style="margin-bottom:0.5rem">Your Homework</div>
+            <div id="student-hw-list">
+              <div style="color:var(--text3);font-size:0.82rem">Loading...</div>
             </div>
+          </div>
           </div>
         </div>
       </div>
@@ -322,6 +323,10 @@
           </div>
           <div class="ls-panel" id="ls-ai-t">
             <div class="ai-section">
+              <div class="ai-section-label" style="margin-bottom:0.3rem">Send to Student</div>
+              <select class="form-input2" id="ai-target-student" style="font-size:0.72rem;padding:0.45rem;margin-bottom:0.5rem;width:100%">
+                <option value="">— Current lesson student —</option>
+              </select>
               <div class="ai-section-label">Lesson Topic</div>
               <textarea class="ai-topic-input" id="ai-topic" placeholder="e.g. Quadratic equations, algebra, calculus..."></textarea>
               <div style="display:flex;gap:0.5rem;margin-top:0.5rem">

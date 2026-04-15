@@ -83,6 +83,16 @@ window.switchPanel = function(id) {
 
 // ── CHAT ──────────────────────────────────────────────────────
 async function openChatPanel(panelId) {
+  if (panelId === 't-chat') {
+    // Teacher: show prompt to select student if no peer set
+    if (!APP.peerUserId) {
+      const body = document.getElementById('channel-body-t');
+      if (body && !body.dataset.loaded) {
+        body.innerHTML = '<div class="channel-sys">👆 Select a student from the Students panel to start chatting</div>';
+      }
+    }
+    return;
+  }
   if (panelId !== 's-chat') return;
   const profile = await getProfile();
   let teacherId = profile?.teacher_id;
@@ -112,7 +122,13 @@ window.setActivePeer = async function(peerId, peerName) {
 window.sendChatMsg = async function(role) {
   const input = document.getElementById(role==='s'?'s-channel-input':'t-channel-input');
   if (!input||!input.value.trim()) return;
-  await sendMessage(input.value.trim()); input.value='';
+  const text = input.value.trim();
+  if (!APP.peerUserId) {
+    showToast(role==='s'?'No teacher assigned yet.':'Select a student first from Students panel.','warning');
+    return;
+  }
+  input.value='';
+  await sendMessage(text);
 };
 window.quickMsg = function(role, text) {
   const input = document.getElementById(role==='s'?'s-channel-input':'t-channel-input');
@@ -122,6 +138,7 @@ window.quickMsg = function(role, text) {
 // ── STUDENT DATA ──────────────────────────────────────────────
 async function loadStudentData() {
   APP.profile = await getProfile();
+  loadStudentHomework();
   try {
     const { data } = await supabase.from('sessions').select('*,teacher:profiles!teacher_id(full_name)').eq('student_id',APP.profile.id).gte('scheduled_at',new Date().toISOString()).order('scheduled_at').limit(3);
     const el = document.getElementById('upcoming-sessions');
@@ -168,10 +185,17 @@ async function loadTeacherStudents() {
   } catch(e) { console.error('loadTeacherStudents:', e); }
 }
 async function loadTeacherStudentDropdown() {
-  const sel = document.getElementById('sched-student'); if (!sel) return;
   try {
     const { data } = await supabase.from('profiles').select('id,full_name').eq('teacher_id',APP.profile.id).eq('role','student');
-    sel.innerHTML = data?.length ? data.map(s=>`<option value="${s.id}">${esc(s.full_name)}</option>`).join('') : '<option value="">No students</option>';
+    const html = data?.length ? data.map(s=>`<option value="${s.id}">${esc(s.full_name)}</option>`).join('') : '<option value="">No students</option>';
+    
+    // Populate schedule dropdown
+    const sel = document.getElementById('sched-student');
+    if (sel) sel.innerHTML = html;
+    
+    // Populate AI homework target dropdown
+    const aiSel = document.getElementById('ai-target-student');
+    if (aiSel) aiSel.innerHTML = '<option value="">— Current lesson student —</option>' + (data?.length ? data.map(s=>`<option value="${s.id}">${esc(s.full_name)}</option>`).join('') : '');
   } catch(e) {}
 }
 async function triggerSubWarning() {
@@ -225,7 +249,7 @@ window.addStudent = async function() {
   try {
     const { data:existing } = await supabase.from('profiles').select('id').eq('email',email).single();
     if (existing) {
-      await supabase.from('profiles').update({ teacher_id:APP.profile.id, subject, full_name:name }).eq('id',existing.id);
+      await supabase.from('profiles').update({ teacher_id:APP.profile.id, subject }).eq('id',existing.id);
       await supabase.from('subscriptions').upsert({ student_id:existing.id, teacher_id:APP.profile.id, total_lessons:lessons, used_lessons:0, status:'active' });
       showToast('✅ '+name+' linked to your account','success');
     } else {
@@ -290,6 +314,26 @@ window.generateHomework = async function() {
   if(!problems?.length){problems=localProblems(topic,count);showToast('💡 Local problem bank','');}
   renderHomework(problems);
   if(btn){btn.disabled=false;btn.textContent='✨ Regenerate';}
+
+  // Save to DB — use selected student or current lesson student
+  if (APP.profile?.role === 'teacher' && problems?.length) {
+    const aiSel = document.getElementById('ai-target-student');
+    const targetId = aiSel?.value || APP.peerUserId;
+    if (targetId) {
+      try {
+        await supabase.from('homework').insert({
+          teacher_id: APP.profile.id,
+          student_id: targetId,
+          problems:   problems,
+          status:     'pending',
+        });
+        const studentName = aiSel?.options[aiSel.selectedIndex]?.text || 'student';
+        showToast('✅ Homework saved & sent to ' + studentName, 'success');
+      } catch(e) { console.error('homework save:', e); }
+    } else {
+      showToast('💡 Homework generated — select a student to save it', '');
+    }
+  }
 };
 function localProblems(topic,count=5){
   const t=topic.toLowerCase();
@@ -311,6 +355,42 @@ function renderHomework(problems){
   area.innerHTML=problems.map((p,i)=>`<div class="hw-item"><div class="hw-item-q">${i+1}. ${esc(p.q)}</div><span class="hw-item-diff ${dm[p.difficulty]||'diff-med'}">${p.difficulty}</span>${p.hint?`<div style="font-size:0.72rem;color:var(--text3);margin-top:3px">💡 ${esc(p.hint)}</div>`:''}</div>`).join('');
 }
 function showAIProviderStatus(){const el=document.getElementById('ai-provider-status');if(el)el.textContent='🟢 Groq AI — active';}
+
+// ── STUDENT HOMEWORK ──────────────────────────────────────────
+async function loadStudentHomework() {
+  try {
+    const { data } = await supabase
+      .from('homework')
+      .select('*, teacher:profiles!teacher_id(full_name)')
+      .eq('student_id', APP.profile.id)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    const area = document.getElementById('student-hw-list');
+    if (!area) return;
+
+    if (!data?.length) {
+      area.innerHTML = '<div style="color:var(--text3);font-size:0.82rem;padding:0.5rem 0">No homework assigned yet.</div>';
+      return;
+    }
+
+    const dm = {easy:'diff-easy', medium:'diff-med', hard:'diff-hard'};
+    area.innerHTML = data.map(hw => {
+      const problems = Array.isArray(hw.problems) ? hw.problems : [];
+      return `<div class="hw-card">
+        <div class="hw-card-header">
+          <span class="hw-card-title">From ${esc(hw.teacher?.full_name||'Teacher')}</span>
+          <span class="hw-item-diff ${hw.status==='submitted'?'diff-easy':'diff-med'}">${hw.status}</span>
+        </div>
+        ${problems.map((p,i)=>`<div class="hw-item">
+          <div class="hw-item-q">${i+1}. ${esc(p.q)}</div>
+          <span class="hw-item-diff ${dm[p.difficulty]||'diff-med'}">${p.difficulty}</span>
+          ${p.hint?`<div style="font-size:0.72rem;color:var(--text3);margin-top:3px">💡 ${esc(p.hint)}</div>`:''}
+        </div>`).join('')}
+      </div>`;
+    }).join('');
+  } catch(e) { console.error('homework load:', e); }
+}
 
 // ── SIGN OUT + MODAL + TOAST + UTILS ─────────────────────────
 window.signOut=async function(){cleanup();await supabase.auth.signOut();window.location.href='../index.html';};
