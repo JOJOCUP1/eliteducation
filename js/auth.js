@@ -16,27 +16,27 @@ const toast = (msg, type = '') => {
   setTimeout(() => t.remove(), 3800);
 };
 
-// ── tab switching ─────────────────────────────────────────────
+// ── tab switching ──────────────────────────────────────────────
 window.switchMode = function(m) {
   mode = m;
   q('tab-login').classList.toggle('active', m === 'login');
   q('tab-signup').classList.toggle('active', m === 'signup');
   q('tab-teacher').classList.toggle('active', m === 'teacher');
 
-  const isSignup  = m === 'signup' || m === 'teacher';
-  q('name-group').style.display    = isSignup ? 'flex' : 'none';
+  const isSignup = m === 'signup' || m === 'teacher';
+  q('name-group').style.display         = isSignup ? 'flex' : 'none';
   q('teacher-code-group').style.display = m === 'teacher' ? 'flex' : 'none';
 
   const labels = {
-    login:   ['Welcome Back',  'Sign In →'],
+    login:   ['Welcome Back',           'Sign In →'],
     signup:  ['Create Student Account', 'Sign Up →'],
-    teacher: ['Teacher Portal','Sign In / Register →'],
+    teacher: ['Teacher Portal',         'Sign In / Register →'],
   };
-  q('auth-title').textContent   = labels[m][0];
-  q('btn-submit').textContent   = labels[m][1];
+  q('auth-title').textContent = labels[m][0];
+  q('btn-submit').textContent = labels[m][1];
 };
 
-// ── form submit ───────────────────────────────────────────────
+// ── form submit ────────────────────────────────────────────────
 q('auth-form').addEventListener('submit', async e => {
   e.preventDefault();
   const email = q('email').value.trim();
@@ -48,43 +48,55 @@ q('auth-form').addEventListener('submit', async e => {
   btn.disabled    = true;
   btn.textContent = '...';
 
-  // ── LOGIN ──
+  // ── LOGIN ──────────────────────────────────────────────────
   if (mode === 'login') {
     const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-    if (error) { toast(error.message, 'warning'); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
+    if (error) {
+      toast(error.message, 'warning');
+      btn.disabled = false;
+      btn.textContent = 'Sign In →';
+      return;
+    }
     window.location.href = 'dashboard.html';
     return;
   }
 
-  // ── TEACHER SIGNUP / LOGIN ──
+  // ── TEACHER ────────────────────────────────────────────────
   if (mode === 'teacher') {
     const TEACHER_CODE = 'EEA2026';
     if (code !== TEACHER_CODE) {
       toast('Invalid teacher access code', 'warning');
-      btn.disabled = false; btn.textContent = 'Sign In / Register →';
+      btn.disabled = false;
+      btn.textContent = 'Sign In / Register →';
       return;
     }
+
     // Try login first
     const { data: loginData, error: loginErr } = await supabase.auth.signInWithPassword({ email, password: pass });
     if (!loginErr && loginData.user) {
-      // Force role to teacher
       await supabase.from('profiles').upsert({
-        id: loginData.user.id,
-        role: 'teacher',
+        id:        loginData.user.id,
+        role:      'teacher',
         full_name: name || loginData.user.user_metadata?.full_name || loginData.user.email,
-        email: loginData.user.email,
+        email:     loginData.user.email,
       });
       window.location.href = 'dashboard.html';
       return;
     }
-    // Signup as teacher — store role in metadata so trigger picks it up
+
+    // Signup as teacher
     const { data, error } = await supabase.auth.signUp({
-      email, password: pass,
-      options: { data: { full_name: name, role: 'teacher' } }
+      email,
+      password: pass,
+      options:  { data: { full_name: name, role: 'teacher' } },
     });
-    if (error) { toast(error.message, 'warning'); btn.disabled = false; btn.textContent = 'Sign In / Register →'; return; }
+    if (error) {
+      toast(error.message, 'warning');
+      btn.disabled = false;
+      btn.textContent = 'Sign In / Register →';
+      return;
+    }
     if (data.user) {
-      // Upsert immediately (works if email confirmation disabled)
       await supabase.from('profiles').upsert({
         id: data.user.id, full_name: name, role: 'teacher', email,
       });
@@ -93,97 +105,56 @@ q('auth-form').addEventListener('submit', async e => {
     if (data.session) {
       window.location.href = 'dashboard.html';
     } else {
-      toast('Check your email to confirm your account, then sign in as Teacher.', '');
-      btn.disabled = false; btn.textContent = 'Sign In / Register →';
+      toast('Check your email to confirm, then Sign In as Teacher.', '');
+      btn.disabled = false;
+      btn.textContent = 'Sign In / Register →';
     }
     return;
   }
 
-  // ── STUDENT SIGNUP ──
+  // ── STUDENT SIGNUP ─────────────────────────────────────────
   const { data, error } = await supabase.auth.signUp({
-    email, password: pass,
-    options: { data: { full_name: name, role: 'student' } }
+    email,
+    password: pass,
+    options:  { data: { full_name: name, role: 'student' } },
   });
-  if (error) { toast(error.message, 'warning'); btn.disabled = false; btn.textContent = 'Sign Up →'; return; }
+  if (error) {
+    toast(error.message, 'warning');
+    btn.disabled = false;
+    btn.textContent = 'Sign Up →';
+    return;
+  }
   if (data.user) {
-    await supabase.from('profiles').upsert({ id: data.user.id, full_name: name, role: 'student', email });
+    await supabase.from('profiles').upsert({
+      id: data.user.id, full_name: name, role: 'student', email,
+    });
     toast('✅ Account created!', 'success');
   }
   if (data.session) {
     window.location.href = 'dashboard.html';
   } else {
-    toast('Check your email to confirm your account, then sign in.', '');
-    btn.disabled = false; btn.textContent = 'Sign Up →';
+    toast('Check your email to confirm, then Sign In.', '');
+    btn.disabled = false;
+    btn.textContent = 'Sign Up →';
   }
 });
-  const btn   = q('btn-submit');
 
-  btn.disabled    = true;
-  btn.textContent = '...';
-
-  // ── LOGIN ──
-  if (mode === 'login') {
-    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-    if (error) { toast(error.message, 'warning'); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
-    window.location.href = 'dashboard.html';
-    return;
-  }
-
-  // ── TEACHER SIGNUP / LOGIN ──
-  if (mode === 'teacher') {
-    // Secret invite code check (set your own code in Supabase or hardcode)
-    const TEACHER_CODE = 'EEA2026'; // admin changes this
-    if (code !== TEACHER_CODE) {
-      toast('Invalid teacher access code', 'warning');
-      btn.disabled = false; btn.textContent = 'Sign In / Register →';
-      return;
-    }
-    // Try login first, then signup
-    const { data: loginData, error: loginErr } = await supabase.auth.signInWithPassword({ email, password: pass });
-    if (!loginErr && loginData.user) {
-      // Update role to teacher if not already
-      await supabase.from('profiles').upsert({ id: loginData.user.id, role: 'teacher', full_name: name || loginData.user.email, email });
-      window.location.href = 'dashboard.html';
-      return;
-    }
-    // Signup as teacher
-    const { data, error } = await supabase.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
-    if (error) { toast(error.message, 'warning'); btn.disabled = false; btn.textContent = 'Sign In / Register →'; return; }
-    if (data.user) {
-      await supabase.from('profiles').upsert({ id: data.user.id, full_name: name, role: 'teacher', email });
-      toast('✅ Teacher account created!', 'success');
-    }
-    window.location.href = 'dashboard.html';
-    return;
-  }
-
-  // ── STUDENT SIGNUP ──
-  const { data, error } = await supabase.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
-  if (error) { toast(error.message, 'warning'); btn.disabled = false; btn.textContent = 'Sign Up →'; return; }
-  if (data.user) {
-    await supabase.from('profiles').upsert({ id: data.user.id, full_name: name, role: 'student', email });
-    toast('✅ Account created!', 'success');
-  }
-  window.location.href = 'dashboard.html';
-});
-
-// ── Google OAuth ──────────────────────────────────────────────
+// ── Google OAuth ───────────────────────────────────────────────
 window.signInWithGoogle = async function() {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.origin + '/pages/dashboard.html' }
+    options:  { redirectTo: window.location.origin + '/pages/dashboard.html' },
   });
   if (error) toast(error.message, 'warning');
 };
 
-// ── OAuth callback ────────────────────────────────────────────
+// ── Auth state change (OAuth + email confirmation) ────────────
 supabase.auth.onAuthStateChange(async (event, session) => {
   if (event === 'SIGNED_IN' && session) {
     const { data: existing } = await supabase
       .from('profiles').select('id, role').eq('id', session.user.id).single();
 
     if (!existing) {
-      // New user — use role from metadata (set during signup)
       const role = session.user.user_metadata?.role || 'student';
       await supabase.from('profiles').insert({
         id:        session.user.id,
@@ -192,7 +163,6 @@ supabase.auth.onAuthStateChange(async (event, session) => {
         email:     session.user.email,
       });
     } else if (existing.role !== 'teacher' && session.user.user_metadata?.role === 'teacher') {
-      // Fix role if metadata says teacher but profile says student
       await supabase.from('profiles').update({ role: 'teacher' }).eq('id', session.user.id);
     }
 

@@ -111,13 +111,12 @@ async function openChatPanel(panelId) {
       const nameEl   = document.getElementById('channel-name');
       const statusEl = document.getElementById('s-channel-status');
       const avatarEl = document.getElementById('s-peer-avatar');
-      if (nameEl)   nameEl.textContent   = teacher.full_name;
-      if (avatarEl) avatarEl.textContent = initials(teacher.full_name);
+      if (nameEl)   nameEl.textContent   = teacher.full_name || 'Teacher';
+      if (avatarEl) avatarEl.textContent = initials(teacher.full_name || 'T');
       if (statusEl) {
-        const lastSeen = teacher.last_seen;
-        const diff = lastSeen ? Math.floor((Date.now() - new Date(lastSeen))/1000) : 9999;
-        statusEl.textContent = diff < 120 ? '● Online · Teacher' : 'Last seen ' + timeAgo(lastSeen);
-        statusEl.style.color = diff < 120 ? 'var(--green)' : 'var(--text3)';
+        const diff = teacher.last_seen ? Math.floor((Date.now()-new Date(teacher.last_seen))/1000) : 9999;
+        statusEl.textContent = diff < 120 ? '● Online · Teacher' : 'Last seen ' + timeAgo(teacher.last_seen);
+        statusEl.style.color = diff < 120 ? '#22c55e' : 'var(--text3)';
       }
     }
     await initChat(teacherId, 'channel-body');
@@ -128,8 +127,10 @@ async function openChatPanel(panelId) {
       .eq('student_id', APP.profile.id).limit(1).single();
     if (stLinks?.teacher) {
       APP.peerUserId = stLinks.teacher.id;
-      const nameEl = document.getElementById('channel-name');
-      if (nameEl) nameEl.textContent = stLinks.teacher.full_name;
+      const nameEl   = document.getElementById('channel-name');
+      const avatarEl = document.getElementById('s-peer-avatar');
+      if (nameEl)   nameEl.textContent   = stLinks.teacher.full_name || 'Teacher';
+      if (avatarEl) avatarEl.textContent = initials(stLinks.teacher.full_name || 'T');
       await initChat(stLinks.teacher.id, 'channel-body');
     } else {
       const body = document.getElementById('channel-body');
@@ -157,8 +158,20 @@ window.sendChatMsg = async function(role) {
   const input = document.getElementById(role==='s'?'s-channel-input':'t-channel-input');
   if (!input||!input.value.trim()) return;
   const text = input.value.trim();
+
+  // If peerUserId not set yet, try to get from profile
+  if (!APP.peerUserId && role === 's') {
+    const profile = await getProfile();
+    APP.peerUserId = profile?.teacher_id;
+    if (!APP.peerUserId) {
+      const { data: stLinks } = await supabase.from('student_teachers')
+        .select('teacher_id').eq('student_id', APP.profile.id).limit(1).single();
+      APP.peerUserId = stLinks?.teacher_id;
+    }
+  }
+
   if (!APP.peerUserId) {
-    showToast(role==='s'?'No teacher assigned yet.':'Select a student first from Students panel.','warning');
+    showToast(role==='s'?'No teacher assigned yet — contact admin.':'Select a student first.','warning');
     return;
   }
   input.value='';
